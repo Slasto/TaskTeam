@@ -1,6 +1,6 @@
 FROM php:apache
 
-# Install dependencies
+# Install dependencies for composer
 RUN apt-get update && \
     apt-get install -y \
         libzip-dev \
@@ -17,18 +17,31 @@ RUN apt-get update && \
         exif \
         pcntl \
         bcmath \
-        gdt
+        gdt 
+
+        #npm
 
 # Install Composer
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php composer-setup.php — install-dir=/usr/local/bin — filename=composer \
     && php -r "unlink('composer-setup.php');"
 
+RUN apt-get install npm
 
-# REMIND!
+# --Installazione Tailwind---
+# npm install -D tailwindcss
+
+# - Compilazione CSS -
+# npx tailwindcss -i ./src/input.css -o ./src/output.css --watch
+
+# ---Importa nuova configurazione su apache2---
 # a2enmod rewrite 
 # a2ensite /etc/apache2/sites-available/swbd_Project.conf
 # service apache2 reload
 
-# into the laravel project folder -> chown -R www-data:www-data *
-#                                 -> chmod -Rf 0777 storage; non è good practice ma almeno funge
+# ---Abbilitiamo PDO_MySql---
+# troviamo la posizione di php.ini-* con: `php --ini`
+# cd /usr/local/etc/php
+# modifichiamo i file `php.ini-production` e `php.ini-development` e decommentiamo la stringa `extension=pdo_mysql` 
+# docker-php-ext-install pdo pdo_mysql
+# service apache2 reload

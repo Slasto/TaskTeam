@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="0nmVXw1R6E6HJbPbJYO8" name="Page-1">
-        <mxGraphModel dx="607" dy="326" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="312" dy="175" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -334,6 +334,18 @@
                 <mxCell id="109" value="Priorità" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="108" vertex="1" connectable="0">
                     <mxGeometry x="0.54" y="-1" relative="1" as="geometry">
                         <mxPoint x="45" y="20" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="111" value="" style="html=1;verticalAlign=bottom;labelBackgroundColor=none;endArrow=oval;endFill=0;endSize=8;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1">
+                    <mxGeometry width="160" relative="1" as="geometry">
+                        <mxPoint x="640" y="79.85" as="sourcePoint"/>
+                        <mxPoint x="680" y="79.85" as="targetPoint"/>
+                        <Array as="points"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="112" value="CodiceInvito" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="111">
+                    <mxGeometry x="0.584" y="-1" relative="1" as="geometry">
+                        <mxPoint x="8" y="10" as="offset"/>
                     </mxGeometry>
                 </mxCell>
             </root>
