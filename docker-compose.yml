@@ -1,0 +1,45 @@
+version: "3.8"
+
+networks:
+  apache2:
+
+services:
+
+  web:
+    image: php:apache
+    volumes:
+      - ./app:/var/www/html/
+      - ./sites-available:/etc/apache2/sites-available
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - apache2
+    depends_on:
+      - db
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: root
+      WORDPRESS_DB_PASSWORD: "1234"
+      WORDPRESS_DB_NAME: SWBD-database
+
+  db:
+    image: mariadb:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: "1234"
+      MYSQL_DATABASE: SWBD-database
+    #ports:
+     # - 3306:3306
+    networks:
+      - apache2
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    depends_on:
+      - db
+    networks:
+      - apache2
+    ports:
+      - 8080:80
+    environment:
+      PMA_HOST: db
