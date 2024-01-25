@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 <head>
-    <link href="./output.css" rel="stylesheet">
+    <link href="./css/output.css" rel="stylesheet">
     <title>Login</title>
 </head>
 
@@ -37,7 +37,7 @@
 
             <p class="mt-10 text-center text-sm text-gray-500">
                 Non sei reggistrato?
-                <a href="Register.php" class="font-semibold leading-6 text-blue-400 hover:text-blue-600">Puoi farlo qui!</a>
+                <a href="Register" class="font-semibold leading-6 text-blue-400 hover:text-blue-600">Puoi farlo da qui!</a>
             </p>
         </div>
     </div>

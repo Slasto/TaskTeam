@@ -29,7 +29,7 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
 RUN apt-get install npm
 
 # --Installazione Tailwind---
-# npm install -D tailwindcss
+RUN npm install -D tailwindcss
 
 # - Compilazione CSS -
 # npx tailwindcss -i ./src/input.css -o ./src/output.css --watch
