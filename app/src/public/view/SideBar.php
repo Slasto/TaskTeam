@@ -3,7 +3,7 @@
 
 <head>
   <!--<script src="https://cdn.tailwindcss.com"></script>-->
-  <link href="../css/output.css" rel="stylesheet">
+  <link href="/css/output.css" rel="stylesheet">
 </head>
 
 <body class="h-full">
@@ -20,18 +20,18 @@
             <div class="md:block">
               <div class="ml-10 flex items-baseline space-x-4">
                 <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-                <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Area riservata</a>
-                <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Team</a>
-                <a href="../Account" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Profilo</a>
+                <a href="/Home" target="_parent" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Area riservata</a>
+                <a href="#" target="_parent" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Team</a>
+                <a href="/Account" target="_parent" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Profilo</a>
               </div>
             </div>
 
             <!--Menu sinistro--->
           </div>
           <div class="ml-4 flex items-center md:ml-6">
-            <button type="button" class="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+            <a href="/logout.php" target="_parent" type="button" class="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
               Logout
-            </button>
+</a>
           </div>
         </div>
       </div>
@@ -44,7 +44,7 @@
       </div>
     </header>
   </div>
-  <script>
+  <script type="text/javascript">
     var params = new URLSearchParams(window.location.search);
     var embeddedBy = params.get('Title');
     document.getElementById("WhiteboardTxt").innerText = embeddedBy;

@@ -17,9 +17,8 @@ RUN apt-get update && \
         exif \
         pcntl \
         bcmath \
-        gdt 
-
-        #npm
+        gdt \
+        npm
 
 # Install Composer
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
@@ -29,10 +28,7 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
 RUN apt-get install npm
 
 # --Installazione Tailwind---
-RUN npm install -D tailwindcss
-
-# - Compilazione CSS -
-# npx tailwindcss -i ./src/input.css -o ./src/output.css --watch
+RUN npm install -D tailwindcss @tailwindcss/forms
 
 # ---Importa nuova configurazione su apache2---
 # a2enmod rewrite 
@@ -45,3 +41,6 @@ RUN npm install -D tailwindcss
 # modifichiamo i file `php.ini-production` e `php.ini-development` e decommentiamo la stringa `extension=pdo_mysql` 
 # docker-php-ext-install pdo pdo_mysql
 # service apache2 reload
+
+# - Compilazione CSS -
+# npx tailwindcss -i ./src/public/css/input.css -o ./src/public/css/output.css --watch
