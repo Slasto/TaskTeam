@@ -140,7 +140,7 @@ if (!isset($_SESSION["logged_in"])) {
                                     <form id="formTeam" class="mt-2" action="javascript:handleTeamSubmit()" onsubmit="return validateTeamCode()">
                                         <!--Text box name-->
                                         <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-                                            <label for="joinTeamCode" class="block space-y-6 text-sm font-medium leading-6 text-gray-900 flex items-center justify-between">Codice
+                                            <label for="joinTeamCode" class=" space-y-6 text-sm font-medium leading-6 text-gray-900 flex items-center justify-between">Codice
                                                 invito</label>
                                             <input id="joinTeamCode" name="joinTeamCode" type="text" required class="block w-full space-y-6 sm:text-sm sm:leading-6 rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600">
                                         </div>
@@ -250,13 +250,13 @@ if (!isset($_SESSION["logged_in"])) {
                                     <form id="formTeamCreate" class="mt-2" action="javascript:handleCreateSubmit()" onsubmit="return validateCreateForm()">
                                         <!--Text box name-->
                                         <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-                                            <label for="NewTeamName" class="block space-y-6 text-sm font-medium leading-6 text-gray-900 flex items-center justify-between">Nome
+                                            <label for="NewTeamName" class="block space-y-6 text-sm font-medium leading-6 text-gray-900  items-center justify-between">Nome
                                                 team</label>
                                             <input id="NewTeamName" name="NewTeamName" type="text" required class="block w-full space-y-6 sm:text-sm sm:leading-6 rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600">
                                         </div>
                                         <!--Text box description-->
                                         <div class="sm:mx-auto sm:w-full sm:max-w-sm mt-3">
-                                            <label for="Description" class="block space-y-6 text-sm font-medium leading-6 text-gray-900 flex items-center justify-between">Breve
+                                            <label for="Description" class="block space-y-6 text-sm font-medium leading-6 text-gray-900 ms-center justify-between">Breve
                                                 descrizione (opzionale)</label>
                                             <textarea id="Description" name="Description" class="block s-full  sm:text-sm sm:leading-6 rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600"></textarea>
                                         </div>
