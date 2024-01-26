@@ -16,7 +16,7 @@ if (!isset($_SESSION["logged_in"])) {
 
 <body>
   <!-- Sidebar -->
-  <object data="/view/SideBar.php?Title=Area%20riservata" width="100%" height="100%"></object>
+  <object data="/view/SideBar?Title=Area%20riservata" width="100%" height="100%"></object>
   <!-- Contenuto principale -->
   <main>
     <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">

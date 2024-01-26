@@ -35,7 +35,7 @@ if (!is_valid_email($email)) {
 
 /* controllo sul username:
  *  - unico e 
- *  -stessa regex del frontend
+ *  - stessa regex del frontend
  */
 if (!is_valid_username($user)) {
     $risposta = array(

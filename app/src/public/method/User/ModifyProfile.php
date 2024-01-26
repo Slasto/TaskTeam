@@ -1,8 +1,7 @@
 <?php
 session_start();
 require_once "./../../../private/UserDataValidation.php";
-function bad_request()
-{
+function bad_request(){
     $risposta = array(
         'stato' => 0,
         'messaggio' => "Bad Request"
@@ -11,6 +10,7 @@ function bad_request()
     echo json_encode($risposta, JSON_PRETTY_PRINT);
     exit;
 }
+
 if ($_SERVER["REQUEST_METHOD"] != "POST") {
     header("HTTP/1.0 405 Method Not Allowed");
     return;
@@ -37,7 +37,6 @@ switch ($_GET["change"]) {
             'messaggio' => "Email cambiata correttamente"
         );
         break;
-
 
     case 'Password':
         if (!isset($_POST["password"]))

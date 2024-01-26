@@ -1,7 +1,7 @@
 <?php
 function is_valid_username($username)
 {
-    $pattern = '/^[a-zA-Z ]{1,32}$/';
+    $pattern = '/^[\w\s]{1,32}$/';
     if (preg_match($pattern, $username))
         return true;
     return false;

@@ -34,7 +34,7 @@
 
             // Verifica che l'Username non contenga caratteri speciali
 
-            re = /^[a-zA-Z ]{1,32}$/;
+            re = /^[\w\s]{1,32}$/;
             if (!re.test(username)) {
                 alert("L'Username non può: contenere caratteri speciali e accentati, ed essere più lungo di 32 caratteri");
                 return false;
@@ -59,7 +59,7 @@
             params.append("username", username);
             params.append("email", email);
             params.append("password", password);
-            fetch("/api/User/Create.php", {
+            fetch("/method/User/Create.php", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
