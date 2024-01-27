@@ -9,7 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] != "POST") {
     return;
 }
 
-if ( !isset($_POST["TeamCode"]) || !isset($_SESSION["username"]) && !isset($_SESSION['logged_in']) && !isset($_SESSION['user_id'])) {
+if (!isset($_POST["TeamCode"]) || !isset($_SESSION["username"]) && !isset($_SESSION['logged_in']) && !isset($_SESSION['user_id'])) {
     header("HTTP/1.0 400 Bad Request");
     echo "0";
     exit();
@@ -17,7 +17,7 @@ if ( !isset($_POST["TeamCode"]) || !isset($_SESSION["username"]) && !isset($_SES
 
 require_once "./../../../private/TeamDataValidation.php";
 $code = $_POST["TeamCode"];
-if(!is_valid_team_code($code)){
+if (!is_valid_team_code($code)) {
     echo "0";
 }
 
@@ -25,12 +25,12 @@ if(!is_valid_team_code($code)){
 require_once "./../../../private/Database.php";
 $stmt = $pdo->prepare("SELECT ID FROM Team Where CodiceInvito = :code");
 $stmt->execute([
-    "code"=>$code
+    "code" => $code
 ]);
 
 $TeamID = ($stmt->fetchAll(PDO::FETCH_ASSOC))[0];
 
-if (!$TeamID){
+if (!$TeamID) {
     echo "0";
     exit();
 }
@@ -40,10 +40,10 @@ $TeamID = $TeamID["ID"];
 // Controllo de l'user_id si trova gia nel team
 $stmt = $pdo->prepare("SELECT ID FROM UserInTeam Where TeamID = :team AND UserID = :user");
 $stmt->execute([
-    "team"=>$TeamID,
-    "user"=>$_SESSION['user_id']
+    "team" => $TeamID,
+    "user" => $_SESSION['user_id']
 ]);
-if(($stmt->fetchAll(PDO::FETCH_ASSOC))){
+if (($stmt->fetchAll(PDO::FETCH_ASSOC))) {
     echo "2";
     exit();
 }
@@ -52,8 +52,8 @@ if(($stmt->fetchAll(PDO::FETCH_ASSOC))){
 // Aggiunta del utente
 $stmt = $pdo->prepare("INSERT INTO UserInTeam (UserID, TeamID) VALUES (:user, :team)");
 $stmt->execute([
-    "user"=>$_SESSION['user_id'],
-    "team"=>$TeamID
+    "user" => $_SESSION['user_id'],
+    "team" => $TeamID
 ]);
 unset($pdo);
 unset($stmt);

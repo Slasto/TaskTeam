@@ -17,13 +17,14 @@ unset($stmt);
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Team</title>
     <link href="/css/output.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Language" content="it">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
@@ -204,7 +205,7 @@ unset($stmt);
             if (Description.length <= 255) {
                 alert("La descrizione non può essere più lunga di 255 caratteri");
                 return false;
-            }*/
+            }
             return true;
         }
 
@@ -288,5 +289,3 @@ unset($stmt);
     </div>
     <!--    FINE Dialog per la creazione ad un gruppo FINE   -->
 </body>
-
-</html>

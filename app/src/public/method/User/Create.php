@@ -77,7 +77,7 @@ $salt = md5(rand());
 $stmt->execute([
     ':username' => $user,
     ':email' => $email,
-    ':HashPW' => password_hash($pwd.":".$salt, PASSWORD_DEFAULT),
+    ':HashPW' => password_hash($pwd . ":" . $salt, PASSWORD_DEFAULT),
     ':salt' => $salt
 ]);
 unset($pdo);

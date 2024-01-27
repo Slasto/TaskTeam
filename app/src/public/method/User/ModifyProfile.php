@@ -1,7 +1,8 @@
 <?php
 session_start();
 require_once "./../../../private/UserDataValidation.php";
-function bad_request(){
+function bad_request()
+{
     $risposta = array(
         'stato' => 0,
         'messaggio' => "Bad Request"
