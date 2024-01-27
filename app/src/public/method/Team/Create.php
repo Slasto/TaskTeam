@@ -30,10 +30,6 @@ $finalQuery = $pdo->prepare("INSERT INTO Team (Nome, Descrizione, CodiceInvito, 
 switch (isset($_POST["Description"])) {
     case true: //esiste Description
         $Description = $_POST["Description"];
-        if (!is_valid_team_description($Description)) {
-            echo "0";
-            exit();
-        }
         break;
     case false: //non Description
         $Description = "None";

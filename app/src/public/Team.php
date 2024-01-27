@@ -4,6 +4,16 @@ if (!isset($_SESSION["logged_in"])) {
     header("location: /");
     exit();
 }
+
+require_once "../private/Database.php";
+$stmt = $pdo->prepare("SELECT TeamID, Nome, Descrizione, CodiceInvito, FK_UsernameProprietario FROM `UserInTeam` JOIN `User` ON UserInTeam.UserID = User.ID JOIN `Team` ON UserInTeam.TeamID = Team.ID WHERE Username = :username AND Nome != \"Privato\"");
+$stmt->execute([
+    "username" => $_SESSION["username"],
+]);
+
+$userTeam = ($stmt->fetchAll(PDO::FETCH_ASSOC));
+unset($pdo);
+unset($stmt);
 ?>
 
 <!DOCTYPE html>
@@ -26,36 +36,38 @@ if (!isset($_SESSION["logged_in"])) {
             <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500">Da qui è puoi visualizzare l'elenco dei tuoi team, gestirli ed aprire la sezione per visualizzare i relativi Todo.<br> Puoi anche creare ed unirti ad altri team</p>
         </div>
         <!-- La tua tabella va qui -->
-        <div class=" flex my-4 border-t border-gray-100">
+        <div class="flex my-4 border-t border-gray-100">
             <table class="w-full border-collapse rounded-lg shadow-md align-middle">
                 <thead>
                     <tr>
-                        <th class="border px-4 py-2 font-bold">Nome Team</th>
-                        <th class="border px-4 py-2 font-bold">Descrizione</th>
-                        <th class="border px-4 py-2 font-bold">Proprietario</th>
-                        <th class="border px-4 py-2 font-bold">Codice invito</th>
-                        <th class="border px-4 py-2 font-bold">Gestione Team</th>
+                        <th class="border pt flex-auto font-bold">Nome Team</th>
+                        <th class="border px-4 py-2 flex-auto font-bold">Descrizione</th>
+                        <th class="border px-4 py-2 flex-auto font-bold">Proprietario</th>
+                        <th class="border px-4 py-2 w-48 font-bold">Codice invito</th>
+                        <th class="border px-4 py-2 w-0 font-bold">Gestione Team</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Inizio riga -->
-                    <tr class="hover:bg-gray-50 focus:bg-gray-300 active:bg-grey-200" tabindex="0">
-                        <td class="border px-4 py-2">Dato 1</td>
-                        <td class="border px-4 py-2">Dato skajdbfajs dfkjasdfkjaskj fhkajsdhfjhsdj fskdjh fkjashdfkjaslkf asdhfhasdkj fhasd fa sdfkjadfkj asdklfahsdfjk2</td>
-                        <td class="border px-4 py-2">asdfsad4fas4df8</td>
-                        <td class="border px-4 py-2">asdfsad4fas4df8</td>
-                        <td class="border px-4 py-2 w-1/4">
-                            <div class="flex space-x-4">
-                                <button onclick="" class="px-4 py-2 bg-blue-700 text-white rounded hover:bg-blue-600 focus:outline-none">
-                                    Apri
-                                </button>
-                                <button onclick="" class="px-4 py-2 bg-red-700 text-white rounded hover:bg-red-600 focus:outline-none">
-                                    Elimina
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <!-- Fine riga -->
+                    <?php foreach ($userTeam as $team) { ?>
+                        <!-- Inizio riga -->
+                        <tr class="hover:bg-gray-50 focus:bg-gray-300 active:bg-grey-200" tabindex="0">
+                            <td class="border px-4 py-2"><?php echo $team["Nome"]; ?></td>
+                            <td class="border px-4 py-2"><?php echo $team["Descrizione"]; ?></td>
+                            <td class="border px-4 py-2"><?php echo $team["FK_UsernameProprietario"]; ?></td>
+                            <td class="border px-4 py-2"><?php echo $team["CodiceInvito"]; ?></td>
+                            <td class="border px-4 py-2">
+                                <div class="flex space-x-4">
+                                    <button onclick="OpenTeam(<?php echo $team["TeamID"]; ?>)" class="px-4 py-2 bg-blue-700 text-white rounded hover:bg-blue-600 focus:outline-none">Apri</button>
+                                    <?php if ($team["FK_UsernameProprietario"] === $_SESSION["username"]) { ?>
+                                        <button onclick="ManageFromTeam(<?php echo $team["TeamID"]; ?>)" class="px-4 py-2 bg-red-700 text-white rounded hover:bg-red-600 focus:outline-none">Gestisci</button>
+                                    <?php } else { ?>
+                                        <button onclick="DeleteFromTeam(<?php echo $team["TeamID"]; ?>)" class="px-7 py-2 bg-red-700 text-white rounded mg hover:bg-red-600 focus:outline-none">Esci</button>
+                                    <?php } ?>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Fine riga -->
+                    <?php } ?>
                 </tbody>
             </table>
         </div>
@@ -188,11 +200,11 @@ if (!isset($_SESSION["logged_in"])) {
                 return false;
             }
 
-            re = /^[\w\s!@#$%^*_|]{0,255}$/;
-            if (!re.test(Description)) {
-                alert("Descrizione non valida,\nSono consentiti al massimo 255 caratteri\nNota! non tutti i caratteri speciali sono consentiti");
+
+            if (Description.length <= 255) {
+                alert("La descrizione non può essere più lunga di 255 caratteri");
                 return false;
-            }
+            }*/
             return true;
         }
 

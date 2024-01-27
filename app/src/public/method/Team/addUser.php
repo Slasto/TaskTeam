@@ -43,7 +43,7 @@ $stmt->execute([
     "team"=>$TeamID,
     "user"=>$_SESSION['user_id']
 ]);
-if(($stmt->fetchAll(PDO::FETCH_ASSOC))[0]){
+if(($stmt->fetchAll(PDO::FETCH_ASSOC))){
     echo "2";
     exit();
 }
