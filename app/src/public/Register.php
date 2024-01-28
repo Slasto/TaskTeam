@@ -49,9 +49,9 @@
                 return false;
             }
             // Verifica che la password e valida
-            re = /^[\w\s!@#$%^&*?.]{12,255}$/
+            re = /^[\w\s!@#$%^&*?.]{12,}$/
             if (!re.test(password)) {
-                alert("La lunghezza della password deve essere tra 12 e 255 caratteri\n Non deve contenere caratteri accentati\nI caratteri speciali consentiti !@#$%^&*?.");
+                alert("La lunghezza della password deve essere di minimo 12 caratteri\n Non deve contenere caratteri accentati\nI caratteri speciali consentiti !@#$%^&*?.");
                 return false;
             }
             return true;
@@ -100,14 +100,14 @@
                 <div>
                     <label for="username" class="block text-sm font-medium leading-6 text-gray-900">Username</label>
                     <div class="mt-2">
-                        <input id="username" name="username" type="text" autocomplete="username" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6">
+                        <input id="username" name="username" type="text" maxlength="32" autocomplete="username" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6">
                     </div>
                 </div>
 
                 <div>
                     <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email</label>
                     <div class="mt-2">
-                        <input id="email" name="email" type="email" autocomplete="email" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6">
+                        <input id="email" name="email" type="email" autocomplete="email" maxlength="50" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6">
                     </div>
                 </div>
 

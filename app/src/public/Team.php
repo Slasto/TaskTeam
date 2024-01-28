@@ -24,11 +24,9 @@ unset($stmt);
     <meta charset="UTF-8">
     <meta http-equiv="Content-Language" content="it">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body>
+<body class="bg-gray-100">
     <object data="/view/SideBar?Title=Team" width="100%" height="100%"></object>
     <main class="mx-auto max-w-7xl py-8 sm:px-6 lg:px-8">
         <!--sezione iniziale-->
@@ -36,8 +34,49 @@ unset($stmt);
             <h3 class="text-base font-semibold leading-7 text-gray-900">I tuoi team</h3>
             <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500">Da qui è puoi visualizzare l'elenco dei tuoi team, gestirli ed aprire la sezione per visualizzare i relativi Todo.<br> Puoi anche creare ed unirti ad altri team</p>
         </div>
-        <!-- La tua tabella va qui -->
-        <div class="flex my-4 border-t border-gray-100">
+        <!-- INIZIO tabella elenco Team INIZIO --->
+        <script type="text/javascript">
+            function DeleteFromTeam(intID) {
+
+                if (!confirm("Sei sicuro di uscire dal Team?"))
+                    return;
+                let params = new URLSearchParams();
+                params.append("TeamID", intID);
+                fetch("/method/Team/RemoveUser.php", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: params
+                    })
+                    .then(response => response.text())
+                    .then(data => {
+                        switch (data.toString()) {
+                            default:
+                            case "0":
+                                alert("Errore l'eliminazione dal Team...");
+                                break;
+                            case "1":
+                                location.href = window.location.protocol + "//" + window.location.host + "/Team";
+                                break;
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
+            }
+
+            function ManageFromTeam(intID) {
+                //il controllo dei permessi è fatto stesso in /ManageTeam.php
+                location.href = window.location.protocol + "//" + window.location.host + "/ManageTeam?TeamID=" + intID;
+            }
+
+            function OpenTeam(intID) {
+                //il controllo dei permessi è fatto stesso in /ViewActivity.php
+                location.href = window.location.protocol + "//" + window.location.host + "/ViewActivity?TeamID=" + intID;
+            }
+        </script>
+        <div class="flex my-4 border-t border-gray-200 bg-slate-50">
             <table class="w-full border-collapse rounded-lg shadow-md align-middle">
                 <thead>
                     <tr>
@@ -51,7 +90,7 @@ unset($stmt);
                 <tbody>
                     <?php foreach ($userTeam as $team) { ?>
                         <!-- Inizio riga -->
-                        <tr class="hover:bg-gray-50 focus:bg-gray-300 active:bg-grey-200" tabindex="0">
+                        <tr class="hover:bg-gray-100 focus:bg-gray-300 active:bg-grey-200" tabindex="0">
                             <td class="border px-4 py-2"><?php echo $team["Nome"]; ?></td>
                             <td class="border px-4 py-2"><?php echo $team["Descrizione"]; ?></td>
                             <td class="border px-4 py-2"><?php echo $team["FK_UsernameProprietario"]; ?></td>
@@ -72,6 +111,7 @@ unset($stmt);
                 </tbody>
             </table>
         </div>
+        <!-- FINE tabella elenco Team FINE --->
         <div class="px-4 pt-5 sm:gap-4 sm:px-0 divide-gray-100">
             <button onclick="showCreateDialog()" class="flex-auto justify-center rounded-md bg-blue-800 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Crea un Team</button>
             <button onclick="showTeamDialog()" class="flex-auto justify-center rounded-md bg-blue-800 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Entra in un Team</button>
@@ -122,7 +162,6 @@ unset($stmt);
                             alert("Il team non esiste");
                             break;
                         case "1":
-                            alert("Sei entrato correttamente nel Team");
                             location.href = window.location.protocol + "//" + window.location.host + "/Team";
                             break;
                         case "2":
@@ -201,11 +240,6 @@ unset($stmt);
                 return false;
             }
 
-
-            if (Description.length <= 255) {
-                alert("La descrizione non può essere più lunga di 255 caratteri");
-                return false;
-            }
             return true;
         }
 
@@ -228,12 +262,10 @@ unset($stmt);
                 .then(response => response.text())
                 .then(data => {
                     switch (data.toString()) {
-                        default:
-                        case "0":
+                        case "-1":
                             alert("Non è stato possibile creare un Team");
                             break;
-                        case "1":
-                            alert("Team creato correttamente");
+                        default:
                             location.href = window.location.protocol + "//" + window.location.host + "/Team";
                             break;
                     }
@@ -265,13 +297,13 @@ unset($stmt);
                                         <div class="sm:mx-auto sm:w-full sm:max-w-sm">
                                             <label for="NewTeamName" class="block space-y-6 text-sm font-medium leading-6 text-gray-900  items-center justify-between">Nome
                                                 team</label>
-                                            <input id="NewTeamName" name="NewTeamName" type="text" required class="block w-full space-y-6 sm:text-sm sm:leading-6 rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600">
+                                            <input id="NewTeamName" name="NewTeamName" maxlength="32" type="text" required class="block w-full space-y-6 sm:text-sm sm:leading-6 rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600">
                                         </div>
                                         <!--Text box description-->
                                         <div class="sm:mx-auto sm:w-full sm:max-w-sm mt-3">
                                             <label for="Description" class="block space-y-6 text-sm font-medium leading-6 text-gray-900 ms-center justify-between">Breve
                                                 descrizione (opzionale)</label>
-                                            <textarea id="Description" name="Description" class="block s-full  sm:text-sm sm:leading-6 rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600"></textarea>
+                                            <textarea id="Description" name="Description" spellcheck="false" maxlength="255" class="block s-full  sm:text-sm sm:leading-6 rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600"></textarea>
                                         </div>
                                     </form>
                                 </div>

@@ -9,7 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] != "POST") {
     return;
 }
 
-if (!isset($_POST["TeamCode"]) || !isset($_SESSION["username"]) && !isset($_SESSION['logged_in']) && !isset($_SESSION['user_id'])) {
+if (!isset($_POST["TeamCode"]) || !isset($_SESSION['logged_in'])) {
     header("HTTP/1.0 400 Bad Request");
     echo "0";
     exit();

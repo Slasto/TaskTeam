@@ -17,7 +17,7 @@ function is_valid_email($email)
 
 function is_valid_password($password)
 {
-    $pattern = '/^[\w\s!@#$%^&*?.]{12,255}$/';
+    $pattern = '/^[\w\s!@#$%^&*?.]{12,}$/';
     if (preg_match($pattern, $password))
         return true;
     return false;

@@ -25,14 +25,13 @@ if (!$userProfile) { //array è vuoto
 
 <head>
     <title>Dashboard</title>
-    <!--<script src="https://cdn.tailwindcss.com"></script>-->
     <link href="/css/output.css" rel="stylesheet">
     <meta charset="UTF-8">
     <meta http-equiv="Content-Language" content="it">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
-<body>
+<body class="bg-gray-100">
     <script type="text/javascript">
         let NewEmail;
         let password;
@@ -62,9 +61,9 @@ if (!$userProfile) { //array è vuoto
             let confirm_password = document.getElementById('confirm_password').value;
 
 
-            let re = /^[\w\s!@#$%^&*?.]{12,255}$/
+            let re = /^[\w\s!@#$%^&*?.]{12,}$/
             if (!re.test(password)) {
-                alert("La lunghezza della password deve essere tra 12 e 255 caratteri\nNon deve contenere caratteri accentati\nI caratteri speciali consentiti !@#$%^&*?.");
+                alert("La lunghezza della password deve essere almeno 12 caratteri\nNon deve contenere caratteri accentati\nI caratteri speciali consentiti !@#$%^&*?.");
                 return false;
             }
 
@@ -145,60 +144,60 @@ if (!$userProfile) { //array è vuoto
     <!-- Sidebar -->
     <object data="/view/SideBar?Title=Account" width="100%" height="100%"></object>
     <!-- Contenuto principale -->
-    <main>
-        <div class="mx-auto max-w-7xl py-8 sm:px-6 lg:px-8">
-            <!--sezione iniziale-->
-            <div class="px-4 sm:px-0">
-                <h3 class="text-base font-semibold leading-7 text-gray-900">Profilo personale</h3>
-                <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500">Da qui è possibile visualizzare e modificare alcuni dati del profilo.</p>
-            </div>
-            <!--Username-->
-            <div class="mt-6 border-t border-gray-100">
-                <dl class="divide-y divide-gray-100">
-                    <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                        <dt class="text-sm font-bold leading-6 text-gray-900">Username:</dt>
-                        <dd class="mt-3 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"><?php echo $_SESSION["username"] ?></dd>
-                    </div>
-                </dl>
-            </div>
-
-            <!--Email-->
-            <form class="mt-6 border-t divide-y divide-gray-100" action="javascript:handleSubmit('Email')" method="POST" onsubmit="return validateEmail()">
-                <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                    <div class="text-sm font-bold leading-6 text-gray-900">Email:</div>
-                    <input id="email" name="email" type="email" autocomplete="email" value="<?php echo $userProfile["Email"] ?>" required class="block flex-auto rounded-md border-0 py-1.5 text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6">
-                </div>
-                <button type="submit" class="flex-auto justify-center mt-2 rounded-md bg-blue-800 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Cambia email</button>
-            </form>
-
-
-            <!--Password-->
-            <form class="mt-6 border-t divide-y divide-gray-100" action="javascript:handleSubmit('Password')" method="POST" onsubmit="return validatePassword()">
-                <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                    <div class="text-sm font-bold leading-6 text-gray-900">Cambia password:</div>
-                    <!--Password 1-->
-                    <div>
-                        <label for="password" class="block text-sm font-medium leading-6 text-gray-700">Nuova password</label>
-                        <div class="mt-2">
-                            <input id="password" name="password" type="password" autocomplete="new-password" required class="block flex-auto rounded-md border-0 py-1.5 text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6">
-                        </div>
-                    </div>
-                    <!--Password 2-->
-                    <div>
-                        <label for="confirm_password" class="block text-sm font-medium leading-6 text-gray-700">Conferma Password</label>
-                        <div class="mt-2">
-                            <input id="confirm_password" name="confirm_password" type="password" autocomplete="current-password" required class="block flex-auto rounded-md border-0 py-1.5 text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6">
-                        </div>
-                    </div>
-                    <!--Password Confirm button-->
-                    <div>
-                        <button type="submit" class="flex-auto justify-center mt-2 rounded-md bg-blue-800 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Cambia password</button>
-                    </div>
-                </div>
-            </form>
-            <div class="px-4 pt-2 sm:gap-4 sm:px-0 border-t divide-gray-100">
-                <button onclick="handleDeleteAccount()" class="flex-auto justify-center rounded-md bg-red-800 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Elimina account</button>
-            </div>
+    <div class="mx-auto max-w-7xl py-8 sm:px-6 lg:px-8">
+        <!--sezione iniziale-->
+        <div class="px-4 sm:px-0">
+            <h3 class="text-base font-semibold leading-7 text-gray-900">Profilo personale</h3>
+            <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500">Da qui è possibile visualizzare e modificare alcuni dati del profilo.</p>
         </div>
-    </main>
+        <!--Username-->
+        <div class="mt-6 border-t border-gray-100">
+            <dl class="divide-y divide-gray-100">
+                <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                    <dt class="text-sm font-bold leading-6 text-gray-900">Username:</dt>
+                    <dd class="mt-3 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"><?php echo $_SESSION["username"] ?></dd>
+
+                </div>
+            </dl>
+        </div>
+
+        <!--Email-->
+        <form class="mt-6 border-t divide-y divide-gray-100" action="javascript:handleSubmit('Email')" method="POST" onsubmit="return validateEmail()">
+            <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <div class="text-sm font-bold leading-6 text-gray-900">Email:</div>
+                <input id="email" name="email" type="email" maxlength="51" autocomplete="email" value="<?php echo $userProfile["Email"] ?>" required class="block flex-auto bg-slate-50 rounded-md border-0 py-1.5 text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6">
+            </div>
+            <button type="submit" class="flex-auto justify-center mt-2 rounded-md bg-blue-800 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Cambia email</button>
+        </form>
+
+
+        <!--Password-->
+        <form class="mt-6 border-t divide-y divide-gray-100" action="javascript:handleSubmit('Password')" method="POST" onsubmit="return validatePassword()">
+            <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <div class="text-sm font-bold leading-6 text-gray-900">Cambia password:</div>
+                <!--Password 1-->
+                <div>
+                    <label for="password" class="block text-sm font-medium leading-6 text-gray-700">Nuova password</label>
+                    <div class="mt-2">
+                        <input id="password" name="password" type="password" required class="block flex-auto bg-slate-50 rounded-md border-0 py-1.5 text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6">
+                    </div>
+                </div>
+                <!--Password 2-->
+                <div>
+                    <label for="confirm_password" class="block text-sm font-medium leading-6 text-gray-700">Conferma Password</label>
+                    <div class="mt-2">
+                        <input id="confirm_password" name="confirm_password" type="password" required class="block flex-auto bg-slate-50 rounded-md border-0 py-1.5 text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6">
+                    </div>
+                </div>
+                <!--Password Confirm button-->
+                <div>
+                    <button type="submit" class="flex-auto justify-center mt-2 rounded-md bg-blue-800 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Cambia password</button>
+                </div>
+            </div>
+        </form>
+        <div class="px-4 pt-2 sm:gap-4 sm:px-0 border-t divide-gray-100">
+            <button onclick="handleDeleteAccount()" class="flex-auto justify-center rounded-md bg-red-800 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Elimina account</button>
+        </div>
+    </div>
+
 </body>

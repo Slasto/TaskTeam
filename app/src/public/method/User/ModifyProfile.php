@@ -18,11 +18,12 @@ if ($_SERVER["REQUEST_METHOD"] != "POST") {
 }
 
 header('Content-Type: application/json');
-if (!isset($_GET["change"]) && !(strcmp($_GET["change"], "Password") == 0 || strcmp($_GET["change"], "Email") == 0) && !isset($_SESSION["username"]) && !isset($_SESSION['logged_in']) && !isset($_SESSION['user_id'])) {
+if (!isset($_GET["change"]) && !(strcmp($_GET["change"], "Password") == 0 || strcmp($_GET["change"], "Email") == 0) && !isset($_SESSION['logged_in'])) {
     bad_request();
 }
 
 require_once "../../../private/Database.php";
+
 switch ($_GET["change"]) {
     case 'Email':
         if (!isset($_POST["email"]))
