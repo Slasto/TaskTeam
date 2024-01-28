@@ -57,7 +57,7 @@ unset($stmt);
                                 alert("Errore l'eliminazione dal Team...");
                                 break;
                             case "1":
-                                location.href = window.location.protocol + "//" + window.location.host + "/Team";
+                                location.reload();
                                 break;
                         }
                     })
@@ -99,9 +99,9 @@ unset($stmt);
                                 <div class="flex space-x-4">
                                     <button onclick="OpenTeam(<?php echo $team["TeamID"]; ?>)" class="px-4 py-2 bg-blue-700 text-white rounded hover:bg-blue-600 focus:outline-none">Apri</button>
                                     <?php if ($team["FK_UsernameProprietario"] === $_SESSION["username"]) { ?>
-                                        <button onclick="ManageFromTeam(<?php echo $team["TeamID"]; ?>)" class="px-4 py-2 bg-red-700 text-white rounded hover:bg-red-600 focus:outline-none">Gestisci</button>
+                                        <button onclick="ManageFromTeam(<?php echo $team['TeamID']; ?>)" class="px-4 py-2 bg-red-700 text-white rounded hover:bg-red-600 focus:outline-none">Gestisci</button>
                                     <?php } else { ?>
-                                        <button onclick="DeleteFromTeam(<?php echo $team["TeamID"]; ?>)" class="px-7 py-2 bg-red-700 text-white rounded mg hover:bg-red-600 focus:outline-none">Esci</button>
+                                        <button onclick="DeleteFromTeam(<?php echo $team['TeamID']; ?>)" class="px-7 py-2 bg-red-700 text-white rounded mg hover:bg-red-600 focus:outline-none">Esci</button>
                                     <?php } ?>
                                 </div>
                             </td>
@@ -162,7 +162,7 @@ unset($stmt);
                             alert("Il team non esiste");
                             break;
                         case "1":
-                            location.href = window.location.protocol + "//" + window.location.host + "/Team";
+                            location.reload();
                             break;
                         case "2":
                             alert("Sei gia un membro del team!");
@@ -266,7 +266,7 @@ unset($stmt);
                             alert("Non è stato possibile creare un Team");
                             break;
                         default:
-                            location.href = window.location.protocol + "//" + window.location.host + "/Team";
+                        location.reload();
                             break;
                     }
                 })

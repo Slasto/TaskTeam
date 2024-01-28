@@ -37,7 +37,6 @@ $UserInTeam = $stmt->fetchAll(PDO::FETCH_ASSOC);
 unset($pdo);
 unset($stmt);
 ?>
-
 <!DOCTYPE html>
 
 <head>
@@ -136,7 +135,37 @@ unset($stmt);
         }
 
         function deleteUser(Username) {
-            
+            if (!confirm("Sei sicuro?"))
+                return;
+
+            let params = new URLSearchParams();
+            params.append("From", "<?php echo $TeamID; ?>");
+            params.append("User", Username);
+
+            fetch("/method/Team/ForceRemoveUser.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: params
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.text();
+            }).then(data => {
+                switch (data) {
+                    case "1":
+                        location.reload();
+                        break;
+                    default:
+                    case "0": //frontend e backend fanno gli stessi controlli sui dati, questo caso non si dovrebbe mai verificare
+                        alert("Errore durante la cancellazione del team, la invitiamo a riprovare più tradi");
+                        break;
+                }
+            }).catch(error => {
+                console.error('error!', error);
+            });
         }
     </script>
     <!-- Sidebar -->
@@ -194,7 +223,7 @@ unset($stmt);
                             <span class="ml-3 font-medium"><?php echo $user["Username"] ?></span>
                         </div>
                         <div>
-                            <button class="rounded-md hover:border-collapse shadow-sm border p-0.5 hover:bg-red-300" onclick="deleteUser(<?php echo $user["Username"] ?>)">
+                            <button class="rounded-md hover:border-collapse shadow-sm border p-0.5 hover:bg-red-300" onclick="deleteUser('<?php echo $user['Username']; ?>')">
                                 <img class="size-7 bg-blue-00" src="/icon/Remove-user.svg" alt="Elimina">
                             </button>
                         </div>
