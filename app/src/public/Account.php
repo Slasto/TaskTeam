@@ -56,6 +56,7 @@ if (!$userProfile) { //array è vuoto
         }
 
         function validatePassword() {
+
             // Ottieni i email dal form
             password = document.getElementById('password').value;
             let confirm_password = document.getElementById('confirm_password').value;

@@ -25,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 function validateCredentials($username, $password)
 {
     require_once "../private/Database.php";
-    $stmt = $pdo->prepare('SELECT ID,HashPW,Salt FROM User WHERE Username = :username');
+    $stmt = $pdo->prepare('SELECT ID,HashPW FROM User WHERE Username = :username');
     $stmt->execute([':username' => $username]);
     $userData = ($stmt->fetchAll(PDO::FETCH_ASSOC));
     unset($pdo);
@@ -34,7 +34,7 @@ function validateCredentials($username, $password)
     if (!$userData) //array è vuoto
         return -1;
     $userData = $userData[0];
-    if (strcmp($userData["HashPW"], password_hash($password . ":" . $userData["Salt"], PASSWORD_DEFAULT)) == 1) //hash non corrisponde
+    if (!password_verify($password, $userData["HashPW"])) //hash non corrisponde
         return -1;
 
     return $userData["ID"];

@@ -97,7 +97,7 @@ unset($stmt);
                             <td class="border px-4 py-2"><?php echo $team["CodiceInvito"]; ?></td>
                             <td class="border px-4 py-2">
                                 <div class="flex space-x-4">
-                                    <button onclick="OpenTeam(<?php echo $team["TeamID"]; ?>)" class="px-4 py-2 bg-blue-700 text-white rounded hover:bg-blue-600 focus:outline-none">Apri</button>
+                                    <button onclick="OpenTeam(<?php echo $team['TeamID']; ?>)" class="px-4 py-2 bg-blue-700 text-white rounded hover:bg-blue-600 focus:outline-none">Apri</button>
                                     <?php if ($team["FK_UsernameProprietario"] === $_SESSION["username"]) { ?>
                                         <button onclick="ManageFromTeam(<?php echo $team['TeamID']; ?>)" class="px-4 py-2 bg-red-700 text-white rounded hover:bg-red-600 focus:outline-none">Gestisci</button>
                                     <?php } else { ?>
@@ -234,9 +234,15 @@ unset($stmt);
             Name = document.getElementById("NewTeamName").value;
             Description = document.getElementById("Description").value;
 
-            let re = /^[\w\s!@#$%^*_|]{1,32}$/;
+            let re = /^[\w\s\-!@#$%^*_|]{1,32}$/;
             if (!re.test(Name)) {
-                alert("Nome non valido");
+                alert("Nome non valido, non tutti i caratteri speciali sono consentiti");
+                return false;
+            }
+
+            re = /^[\u00C0-\u017Fa-zA-Z\s!@#$%^*\-_|0-9]{0,255}$/
+            if (!re.test(Description)) {
+                alert("Descrizione non valida non valido, non tutti i caratteri speciali sono consentiti");
                 return false;
             }
 

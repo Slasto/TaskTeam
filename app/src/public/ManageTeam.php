@@ -52,13 +52,21 @@ unset($stmt);
         let TeamName;
         let Description;
 
+        //TODO: Input Sanitization
         //Validazione form
         function validateFrom() {
             TeamName = document.getElementById("Nome").value;
             Description = document.getElementById("Description").value;
 
-            if (!/^[\w\s!@#$%^*_|]{1,32}$/.test(TeamName)) {
-                alert("Nome team non valido!\nDeve essere di massimo 12 caratteri e non tutti i caratteri speciali sono consentiti")
+            if (!/^[\w\s!@#$%^*\-_|]{1,32}$/.test(TeamName)) {
+                alert("Nome team non valido!\nNon tutti i caratteri speciali sono consentiti")
+                return false;
+            }
+
+
+            re = /^[\u00C0-\u017Fa-zA-Z\s!@#$%^*\-_|0-9]{0,255}$/
+            if (!re.test(Description)) {
+                alert("Descrizione non valida non valido, Non tutti i caratteri speciali sono consentiti");
                 return false;
             }
             return true;
@@ -70,7 +78,7 @@ unset($stmt);
             params.append("TeamID", <?php echo $TeamData["ID"] ?>)
             params.append("TeamName", TeamName)
             params.append("TeamDescription", Description)
-            fetch("/method/Team/ModifyTeam.php", {
+            fetch("/method/Team/Edit.php", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
@@ -217,7 +225,7 @@ unset($stmt);
             <?php foreach ($UserInTeam as $user) { ?>
                 <!-- Elemento lista partecipanti-->
                 <ul class="divide-y rounded-md divide-gray-200">
-                    <li class="p-3 flex justify-between items-center user-card">
+                    <li class="p-3 flex justify-between items-center">
                         <div class="flex items-center">
                             <img class="w-10 h-10 rounded-full bg-blue-00" src="/icon/profile-pic.png" alt="User">
                             <span class="ml-3 font-medium"><?php echo $user["Username"] ?></span>
