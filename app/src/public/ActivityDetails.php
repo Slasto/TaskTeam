@@ -1,48 +1,83 @@
 <?php
 session_start();
-if (!isset($_SESSION["logged_in"]) || !isset($_GET["TeamID"]) || !is_numeric($_GET["TeamID"])) {
+if (!isset($_SESSION['logged_in'])) {
+    header("location: /");
+    exit();
+}
+
+if (!isset($_GET['TeamID']) || !isset($_GET['ActivityID'])) {
+    header("HTTP/1.0 400 Bad Request");
     header("location: /Team");
     exit();
 }
-$TeamID = intval($_GET["TeamID"]);
 
+$TeamID = $_GET["TeamID"];
+$ActivityID = $_GET["ActivityID"];
+
+if (!is_numeric($TeamID) || !is_numeric($ActivityID)) {
+    header("HTTP/1.0 400 Bad Request");
+    header("location: /Team");
+    exit();
+};
+$TeamID = intval($TeamID);
+$ActivityID = intval($ActivityID);
 
 
 require_once "../private/Database.php";
-$stmt = $pdo->prepare("SELECT * FROM Team WHERE ID = :TeamID AND  FK_UsernameProprietario = :Username AND Nome!=\"Privato\"");
+
+//è l'utente membro del team?
+$stmt = $pdo->prepare("SELECT ID FROM UserInTeam WHERE UserID = :userId AND TeamID = :tid");
 $stmt->execute([
-    "TeamID" => $_GET["TeamID"],
-    "Username" => $_SESSION["username"]
-
+    "userId" => $_SESSION["user_id"],
+    "tid" => $TeamID
 ]);
-$TeamData = ($stmt->fetchAll(PDO::FETCH_ASSOC));
 
-// Il è team riservato al solo utente e appartiene a chi ha fatto la richiesta?
-if (!$TeamData) {
-    header("location: /Team");
+if (!($stmt->fetchAll(PDO::FETCH_ASSOC))) {
     header("HTTP/1.0 403 Forbidden");
+    header("location: /Team");
+    exit();
+};
+
+// Esiste l'attivita + Prendo i dati di essa
+$stmt = $pdo->prepare("SELECT * FROM Attivita WHERE ID=:id AND FK_TeamID = :TeamID");
+$stmt->execute([
+    "id" => $ActivityID,
+    "TeamID" => $TeamID
+]);
+
+$activityData = $stmt->fetchAll(PDO::FETCH_ASSOC)[0];
+if (!$activityData) { // esiste l'attivita?
+    header("HTTP/1.0 400 Bad Request");
+    header("location: /ViewActivity?TeamID=" . $TeamID);
     exit();
 }
-$TeamData = $TeamData[0];
 
-$stmt = $pdo->prepare("SELECT User.ID, User.Username FROM UserInTeam JOIN `User` ON UserInTeam.UserID = User.ID WHERE TeamID = :Tid AND User.ID != :Uid");
+
+$stmt = $pdo->prepare("SELECT FK_UsernameProprietario,Nome FROM Team WHERE ID = :tid");
 $stmt->execute([
-    "Tid" => $TeamID,
-    "Uid" => $_SESSION["user_id"]
-
+    "tid" => $TeamID
 ]);
+$Team = $stmt->fetchAll(PDO::FETCH_ASSOC)[0];
 
-$UserInTeam = $stmt->fetchAll(PDO::FETCH_ASSOC);
+if ($Team["FK_UsernameProprietario"] === $_SESSION['username']) {
+    $stmt = $pdo->prepare("SELECT User.ID, User.Username FROM UserInTeam JOIN `User` ON UserInTeam.UserID = User.ID WHERE TeamID = :Tid AND User.ID != :Uid");
+    $stmt->execute([
+        "Tid" => $TeamID,
+        "Uid" => $_SESSION["user_id"]
+    ]);
+    $UserInTeam = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
-//Allora puoi gestire il team...
 unset($pdo);
 unset($stmt);
 ?>
+
 <!DOCTYPE html>
 
 <head>
-    <title>Gestione Team</title>
+    <title>Attivita team: <?php echo $Team["Nome"] ?></title>
     <link href="/css/output.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Language" content="it">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -178,22 +213,22 @@ unset($stmt);
         }
     </script>
     <!-- Sidebar -->
-    <object data="/view/SideBar?Title=Team" width="100%" height="100%"></object>
+    <object data="/view/SideBar?Title=Dettaglio%20attivita" width="100%" height="100%"></object>
 
     <!-- Contenuto principale -->
-    <form id="FormTeam" action="javascript:handleSubmitTeam()" method="POST" onsubmit="return validateFrom()" class="mx-auto max-w-7xl py-8 sm:px-6 lg:px-8">
+    <form id="Form" action="javascript:handleSubmitTeam()" method="POST" onsubmit="return validateFrom()" class="mx-auto max-w-7xl py-8 sm:px-6 lg:px-8">
         <!--sezione iniziale-->
         <div class="px-4 sm:px-0">
-            <h3 class="text-base font-semibold leading-7 text-gray-900">Gestione Team</h3>
-            <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500">Da qui è possibile modificare alcuni dati relativo al tuo team specificato.</p>
+            <h3 class="text-base font-semibold leading-7 text-gray-900">Gestione Attivita</h3>
+            <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500">Da qui è possibile visualizzare e modificare tutti i campi relativi ad un attivita.</p>
         </div>
 
-        <!--Nome Team-->
+        <!--Titolo attivita-->
         <div class="mt-6 border-t border-gray-100">
             <dl class="divide-y divide-gray-100">
                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                    <dt class="text-sm font-bold leading-6 text-gray-900">Nome Team:</dt>
-                    <input id="Nome" name="Nome" type="text" maxlength="32" value="<?php echo $TeamData["Nome"] ?>" required class="block flex-auto bg-slate-50 rounded-md border-0 p-1.5 text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6">
+                    <dt class="text-sm font-bold leading-6 text-gray-900">Titolo:</dt>
+                    <input id="titolo" name="titolo" type="text" maxlength="255" value="<?php echo $activityData["Titolo"] ?>" required class="w-auto flex-auto bg-slate-50 rounded-md border-0 p-1.5 text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6">
                 </div>
             </dl>
         </div>
@@ -202,44 +237,27 @@ unset($stmt);
         <div class="mt-6 border-t divide-y divide-gray-100" action="javascript:handleSubmit('Email')" method="POST" onsubmit="return validateEmail()">
             <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                 <div class="text-sm font-bold leading-6 text-gray-900">Descrizione:</div>
-                <textarea id="Description" name="Description" spellcheck="false" maxlength="255" class="block s-full bg-slate-50 h-36 sm:text-sm sm:leading-6 rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600"><?php echo $TeamData["Descrizione"] ?></textarea>
+                <textarea id="Description" name="Description" spellcheck="false" maxlength="255" class="block s-full bg-slate-50 h-36 sm:text-sm sm:leading-6 rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600"><?php echo $activityData["Descrizione"] ?></textarea>
             </div>
         </div>
+
+        <!--Scadenza + data completamento e da chi-->
+        <div class="mt-6 border-t divide-y divide-gray-100" action="javascript:handleSubmit('Email')" method="POST" onsubmit="return validateEmail()">
+            <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <div class="text-sm font-bold leading-6 text-gray-900">Dati sulla scadenza</div>
+                <textarea id="Description" name="Description" spellcheck="false" maxlength="255" class="block s-full bg-slate-50 h-36 sm:text-sm sm:leading-6 rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600"><?php echo $activityData["Descrizione"] ?></textarea>
+            </div>
+
+        <!--Assegnazione-->
+            <div class="mt-6 border-t divide-y divide-gray-100" action="javascript:handleSubmit('Email')" method="POST" onsubmit="return validateEmail()">
+                <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <div class="text-sm font-bold leading-6 text-gray-900">Assegnazione attivita</div>
+                <textarea id="Description" name="Description" spellcheck="false" maxlength="255" class="block s-full bg-slate-50 h-36 sm:text-sm sm:leading-6 rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600"><?php echo $activityData["Descrizione"] ?></textarea>
+            </div>
+
         <div class="px-4 pt-2 sm:gap-4 sm:px-0 border-t divide-gray-100">
-            <button type="submit" class="flex-auto justify-center mt-2 rounded-md bg-blue-800 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Aggiorna dati team</button>
-            <button onclick="handleDeleteTeam()" type="button" class="flex-auto justify-center rounded-md bg-red-800 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Elimina Team</button>
-        </div>
+                <button type="submit" class="flex-auto justify-center mt-2 rounded-md bg-blue-800 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Aggiorna dati team</button>
+                <button onclick="handleDeleteTeam()" type="button" class="flex-auto justify-center rounded-md bg-red-800 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Elimina Team</button>
+            </div>
     </form>
-
-    <!-- Lista partecipanti-->
-    <div class="mx-auto max-w-7xl py-8 sm:px-6 lg:px-8">
-        <div class="px-4 sm:px-0">
-            <h3 class="text-base font-semibold leading-7 text-gray-900">Elenco membri del Team</h3>
-            <?php if ($UserInTeam) { ?>
-                <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500">Da qui è possibile rimuovere gli altri utenti dal tuo team</p>
-            <?php } else { ?>
-                <div class="mt-1 max-w-2xl text-sm leading-6 text-red-800">In questo Team non ci sono ancora altri utenti!</div>
-            <?php } ?>
-        </div>
-
-        <div class="max-w-sm bg-slate-50 my-10 rounded-md">
-            <?php foreach ($UserInTeam as $user) { ?>
-                <!-- Elemento lista partecipanti-->
-                <ul class="divide-y rounded-md divide-gray-200">
-                    <li class="p-3 flex justify-between items-center">
-                        <div class="flex items-center">
-                            <img class="w-10 h-10 rounded-full bg-blue-00" src="/icon/profile-pic.png" alt="User">
-                            <span class="ml-3 font-medium"><?php echo $user["Username"] ?></span>
-                        </div>
-                        <div>
-                            <button class="rounded-md hover:border-collapse shadow-sm border p-0.5 hover:bg-red-300" onclick="deleteUser('<?php echo $user['Username']; ?>')">
-                                <img class="size-7 bg-blue-00" src="/icon/Remove-user.svg" alt="Elimina">
-                            </button>
-                        </div>
-                    </li>
-                </ul>
-            <?php } ?>
-        </div>
-    </div>
-
 </body>

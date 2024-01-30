@@ -17,7 +17,7 @@ function is_valid_activity_description($desc)
 
 function is_valid_activity_expire_date($date)
 {
-    if ($date==="")
+    if ($date === "")
         return true;
     $currentDate = new DateTime('now', new DateTimeZone('Europe/Rome'));
     $inputDate = DateTime::createFromFormat('Y-m-d', $date, new DateTimeZone('Europe/Rome'));

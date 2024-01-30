@@ -6,6 +6,7 @@ if (!isset($_SESSION["logged_in"])) {
 }
 
 if (!isset($_GET["TeamID"])) {
+  header("HTTP/1.0 400 Bad Request");
   header("location: /Team");
   exit();
 }
@@ -95,6 +96,12 @@ $i = 0;
     </div>
     <button type="button" onclick="showDialog()" class="flex-auto justify-center mt-2 rounded-md bg-blue-800 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 mb-4">Nuova attivita</button>
 
+    <script type="text/javascript">
+      function ModifyDetails(intID) {
+        location.href = window.location.protocol + "//" + window.location.host + "/ActivityDetails?TeamID=" + <?php echo $TeamID ?> + "&ActivityID=" + parseInt(intID);
+      }
+    </script>
+
     <!-- 3 colonne Attività --->
     <div class="flex border rounded-lg py-3 shadow-sm">
       <!-- Colonna 1 -->
@@ -111,7 +118,7 @@ $i = 0;
               <div class="border-t-2 border-dashed"> Scadenza: <?php echo $ListaAttivita[$i]["Scadenza"] ? $ListaAttivita[$i]["Scadenza"] : "non assegnata" ?></div>
               <div> Assegnato a: <?php echo $ListaAttivita[$i]["Assegnato"] ? $ListaAttivita[$i]["Assegnato"] : "non assegnata" ?></div>
             </div>
-            <button class="rounded-md hover:border-collapse shadow-md border p-0.5 hover:bg-slate-200" onclick="ModifyDetails()">
+            <button class="rounded-md hover:border-collapse shadow-md border p-0.5 hover:bg-slate-200" onclick="ModifyDetails(<?php echo $ListaAttivita[$i]['ID'] ?>)">
               <img class="size-7 bg-blue-00" src="/icon/Modify.svg" alt="mod">
             </button>
           </div>
@@ -133,7 +140,7 @@ $i = 0;
               <div class="border-t-2 border-dashed"> Scadenza: <?php echo $ListaAttivita[$i]["Scadenza"] ? $ListaAttivita[$i]["Scadenza"] : "non assegnata" ?></div>
               <div> Assegnato a: <?php echo $ListaAttivita[$i]["Assegnato"] ? $ListaAttivita[$i]["Assegnato"] : "non assegnata" ?></div>
             </div>
-            <button class="rounded-md hover:border-collapse shadow-md border p-0.5 hover:bg-slate-200" onclick="ModifyDetails()">
+            <button class="rounded-md hover:border-collapse shadow-md border p-0.5 hover:bg-slate-200" onclick="ModifyDetails(<?php echo $ListaAttivita[$i]['ID'] ?>)">
               <img class="size-7 bg-blue-00" src="/icon/Modify.svg" alt="mod">
             </button>
           </div>
@@ -154,7 +161,7 @@ $i = 0;
               <div class="border-t-2 border-dashed"> Scadenza: <?php echo $ListaAttivita[$i]["Scadenza"] ? $ListaAttivita[$i]["Scadenza"] : "non assegnata" ?></div>
               <div> Assegnato a: <?php echo $ListaAttivita[$i]["Assegnato"] ? $ListaAttivita[$i]["Assegnato"] : "non assegnata" ?></div>
             </div>
-            <button class="rounded-md hover:border-collapse shadow-md border p-0.5 hover:bg-slate-200" onclick="ModifyDetails()">
+            <button class="rounded-md hover:border-collapse shadow-md border p-0.5 hover:bg-slate-200" onclick="ModifyDetails(<?php echo $ListaAttivita[$i]['ID'] ?>)">
               <img class="size-7 bg-blue-00" src="/icon/Modify.svg" alt="mod">
             </button>
           </div>
