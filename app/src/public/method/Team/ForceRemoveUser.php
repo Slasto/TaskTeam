@@ -24,22 +24,24 @@ if (!is_numeric($_POST["From"]) || !is_valid_username($_POST["User"])) {
 }
 $TeamID = intval($TeamID);
 
-
-
-
 require_once "./../../../private/Database.php";
 // Prendo l'username del proprietario
 $stmt = $pdo->prepare("SELECT FK_UsernameProprietario FROM Team WHERE ID = :Team ");
 $stmt->execute([
     "Team" => $TeamID,
 ]);
-$ProprietarioTeam = ($stmt->fetchAll(PDO::FETCH_ASSOC))[0]["FK_UsernameProprietario"];
+$ProprietarioTeam = $stmt->fetchAll(PDO::FETCH_ASSOC);
+if (!$ProprietarioTeam) {
+    echo "-1";
+    exit();
+}
+$ProprietarioTeam =  $ProprietarioTeam[0]["FK_UsernameProprietario"];
 
 //si sta cercando di rimuovere il proprietario dal Team? OR è il proprietario del team che sta facendo la richiesta?
 if ($ProprietarioTeam === $_POST["User"] || $ProprietarioTeam !== $_SESSION["username"]) {
     echo "-1";
     exit();
-}
+};
 
 //Prendo l'userID
 $stmt = $pdo->prepare("SELECT ID FROM User WHERE Username = :user");

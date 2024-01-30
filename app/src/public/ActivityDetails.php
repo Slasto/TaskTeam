@@ -45,12 +45,13 @@ $stmt->execute([
     "TeamID" => $TeamID
 ]);
 
-$activityData = $stmt->fetchAll(PDO::FETCH_ASSOC)[0];
+$activityData = $stmt->fetchAll(PDO::FETCH_ASSOC);
 if (!$activityData) { // esiste l'attivita?
     header("HTTP/1.0 400 Bad Request");
     header("location: /ViewActivity?TeamID=" . $TeamID);
     exit();
 }
+$activityData = $activityData[0];
 
 
 $stmt = $pdo->prepare("SELECT FK_UsernameProprietario,Nome FROM Team WHERE ID = :tid");
@@ -59,11 +60,10 @@ $stmt->execute([
 ]);
 $Team = $stmt->fetchAll(PDO::FETCH_ASSOC)[0];
 
-if ($Team["FK_UsernameProprietario"] === $_SESSION['username']) {
-    $stmt = $pdo->prepare("SELECT User.ID, User.Username FROM UserInTeam JOIN `User` ON UserInTeam.UserID = User.ID WHERE TeamID = :Tid AND User.ID != :Uid");
+if ($isProprietario = $Team["FK_UsernameProprietario"] === $_SESSION['username']) {
+    $stmt = $pdo->prepare("SELECT User.ID, User.Username FROM UserInTeam JOIN `User` ON UserInTeam.UserID = User.ID WHERE TeamID = :Tid ");
     $stmt->execute([
         "Tid" => $TeamID,
-        "Uid" => $_SESSION["user_id"]
     ]);
     $UserInTeam = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
@@ -85,108 +85,41 @@ unset($stmt);
 
 <body class="bg-gray-100">
     <script type="text/javascript">
-        let TeamName;
+        let Title;
         let Description;
+        let Stato;
+        let Scadenza;
 
-        //TODO: Input Sanitization
-        //Validazione form
         function validateFrom() {
-            TeamName = document.getElementById("Nome").value;
+            Title = document.getElementById("titolo").value;
             Description = document.getElementById("Description").value;
+            Stato = document.getElementById("stato").value;
+            Scadenza = document.getElementById("expire").value;
 
-            if (!/^[\w\s!@#$%^*\-_|]{1,32}$/.test(TeamName)) {
-                alert("Nome team non valido!\nNon tutti i caratteri speciali sono consentiti")
+            if (!/^[\w\s0-9]{1,255}$/.test(Title)) {
+                alert("Nome Attivita non valido!\nNon tutti i caratteri speciali sono consentiti")
                 return false;
             }
 
-
             re = /^[\u00C0-\u017Fa-zA-Z\s!@#$%^*\-_|0-9]{0,255}$/
             if (!re.test(Description)) {
-                alert("Descrizione non valida non valido, Non tutti i caratteri speciali sono consentiti");
+                alert("Descrizione non valida non valido, non tutti i caratteri speciali sono consentiti");
                 return false;
             }
             return true;
         }
 
-        function handleSubmitTeam() {
+        function handleSubmit() {
             //Creazione del body
             let params = new URLSearchParams();
-            params.append("TeamID", <?php echo $TeamData["ID"] ?>)
-            params.append("TeamName", TeamName)
-            params.append("TeamDescription", Description)
-            fetch("/method/Team/Edit.php", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
-                body: params
-            }).then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.text();
-            }).then(data => {
-                switch (data) {
-                    case "1":
-                        alert("Modifiche avvenute con successo");
-                        break;
-                    default:
-                    case "0": //frontend e backend fanno gli stessi controlli sui dati, questo caso non si dovrebbe mai verificare
-                        alert("Errore! dati inseriti non validi");
-                        break;
-                    case "-1":
-                        alert("Errore! non si dispone del autorizzazione necessaria per modificare i dati di questo team");
-                        break;
-                }
-            }).catch(error => {
-                console.error('error!', error);
-            });
-        }
+            params.append("TeamID", <?php echo $TeamID ?>);
+            params.append("AttivitaID", <?php echo $ActivityID ?>);
+            params.append("Titolo", Title);
+            params.append("Descrizione", Description);
+            params.append("Stato", Stato);
+            params.append("Scadenza", Scadenza);
 
-        function handleDeleteTeam() {
-            if (!confirm("Sei sicuro?\nQuesta azione non sarà reversibile"))
-                return;
-
-            let intID = <?php echo $TeamID ?>
-
-            let params = new URLSearchParams();
-            params.append("TeamID", intID)
-            fetch("/method/Team/Delete.php", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
-                body: params
-            }).then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.text();
-            }).then(data => {
-                switch (data) {
-                    case "1":
-                        alert("Cancellazione avvenuta con successo");
-                        location.href = window.location.protocol + "//" + window.location.host + "/Team";
-                        break;
-                    default:
-                    case "0": //frontend e backend fanno gli stessi controlli sui dati, questo caso non si dovrebbe mai verificare
-                        alert("Errore durante la cancellazione del team, la invitiamo a riprovare più tradi");
-                        break;
-                }
-            }).catch(error => {
-                console.error('error!', error);
-            });
-        }
-
-        function deleteUser(Username) {
-            if (!confirm("Sei sicuro?"))
-                return;
-
-            let params = new URLSearchParams();
-            params.append("From", "<?php echo $TeamID; ?>");
-            params.append("User", Username);
-
-            fetch("/method/Team/ForceRemoveUser.php", {
+            fetch("/method/Attivita/Edit.php", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
@@ -204,6 +137,42 @@ unset($stmt);
                         break;
                     default:
                     case "0": //frontend e backend fanno gli stessi controlli sui dati, questo caso non si dovrebbe mai verificare
+                        alert("Errore! dati inseriti non validi");
+                        break;
+                    case "-1":
+                        alert("Errore! non si dispone del autorizzazione necessaria per modificare i dati di questo team");
+                        break;
+                }
+            }).catch(error => {
+                console.error('error!', error);
+            });
+        }
+
+        function handleDelete() {
+            if (!confirm("Sei sicuro?\nQuesta azione non sarà reversibile"))
+                return;
+            let TeamID = <?php echo $TeamID; ?>;
+            let params = new URLSearchParams();
+            params.append("TeamID", TeamID);
+            params.append("AttivitaID", <?php echo $ActivityID; ?>)
+            fetch("/method/Attivita/Delete.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: params
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.text();
+            }).then(data => {
+                switch (data) {
+                    case "1":
+                        location.href = window.location.protocol + "//" + window.location.host + "/ViewActivity?TeamID=" + <?php echo $TeamID; ?>;
+                        break;
+                    default:
+                    case "0": //frontend e backend fanno gli stessi controlli sui dati, questo caso non si dovrebbe mai verificare
                         alert("Errore durante la cancellazione del team, la invitiamo a riprovare più tradi");
                         break;
                 }
@@ -216,7 +185,7 @@ unset($stmt);
     <object data="/view/SideBar?Title=Dettaglio%20attivita" width="100%" height="100%"></object>
 
     <!-- Contenuto principale -->
-    <form id="Form" action="javascript:handleSubmitTeam()" method="POST" onsubmit="return validateFrom()" class="mx-auto max-w-7xl py-8 sm:px-6 lg:px-8">
+    <form id="Form" action="javascript:handleSubmit()" onsubmit="return validateFrom()" class="mx-auto max-w-7xl py-8 sm:px-6 lg:px-8">
         <!--sezione iniziale-->
         <div class="px-4 sm:px-0">
             <h3 class="text-base font-semibold leading-7 text-gray-900">Gestione Attivita</h3>
@@ -237,27 +206,78 @@ unset($stmt);
         <div class="mt-6 border-t divide-y divide-gray-100" action="javascript:handleSubmit('Email')" method="POST" onsubmit="return validateEmail()">
             <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                 <div class="text-sm font-bold leading-6 text-gray-900">Descrizione:</div>
-                <textarea id="Description" name="Description" spellcheck="false" maxlength="255" class="block s-full bg-slate-50 h-36 sm:text-sm sm:leading-6 rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600"><?php echo $activityData["Descrizione"] ?></textarea>
+                <textarea id="Description" name="Description" spellcheck="false" maxlength="255" class="block bg-slate-50 h-36 sm:text-sm sm:leading-6 rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600"><?php echo $activityData["Descrizione"] ?></textarea>
+            </div>
+        </div>
+
+        <!--Stato-->
+        <div class="mt-6 border-t divide-y divide-gray-100" action="javascript:handleSubmit('Email')" method="POST" onsubmit="return validateEmail()">
+            <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <div id="statoLabel" class="text-sm font-bold leading-6 text-blue-800">Stato attivita:</div>
+                <div>
+                    <select id="stato" name="stato" class="w-40 flex-auto bg-slate-50 rounded-md border-0 p-1.5 text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6">
+                        <option value="Da fare" <?php echo ($activityData["Stato"] == "Da fare") ? "selected" : ""; ?>>Da fare</option>
+                        <option value="In corso" <?php echo ($activityData["Stato"] == "In corso") ? "selected" : ""; ?>>In corso</option>
+                        <option value="Fatto" <?php echo ($activityData["Stato"] == "Fatto") ? "selected" : ""; ?>>Fatto</option>
+                    </select>
+                </div>
+
             </div>
         </div>
 
         <!--Scadenza + data completamento e da chi-->
-        <div class="mt-6 border-t divide-y divide-gray-100" action="javascript:handleSubmit('Email')" method="POST" onsubmit="return validateEmail()">
-            <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <div class="text-sm font-bold leading-6 text-gray-900">Dati sulla scadenza</div>
-                <textarea id="Description" name="Description" spellcheck="false" maxlength="255" class="block s-full bg-slate-50 h-36 sm:text-sm sm:leading-6 rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600"><?php echo $activityData["Descrizione"] ?></textarea>
+        <div class="px-4 py-6 border-t sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <div class="text-sm font-bold leading-6 text-red-800">Dati sulla scadenza</div>
+            <div class="flex">
+                <input id="expire" value="<?php echo $activityData["Scadenza"] ?>" type="date" min="<?php echo (new DateTime('now', new DateTimeZone('Europe/Rome')))->format('Y-m-d'); ?>" class="w-40 size-fit mt-auto mr-4 space-y-6 sm:text-sm sm:leading-6 rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600" />
+                <?php if ($activityData["Stato"] === 'Fatto') { ?>
+                    <div>
+                        <label for="done" class="space-y-6 text-sm font-medium leading-6 text-gray-900 flex items-center justify-between">Fatto in data</label>
+                        <input id="done" disabled value="<?php echo $activityData["FattoIl"] ?>" type="done" min="<?php echo $activityData["FattoIl"]  ?>" class="block space-y-6 sm:text-sm sm:leading-6 rounded-md w-40 p-1.5 text-gray-900 shadow-sm" />
+                    </div>
+                <?php } ?>
             </div>
+        </div>
 
         <!--Assegnazione-->
-            <div class="mt-6 border-t divide-y divide-gray-100" action="javascript:handleSubmit('Email')" method="POST" onsubmit="return validateEmail()">
-                <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+        <div class="mt-6 border-t divide-y divide-gray-100" action="javascript:handleSubmit('Email')" method="POST" onsubmit="return validateEmail()">
+            <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                 <div class="text-sm font-bold leading-6 text-gray-900">Assegnazione attivita</div>
-                <textarea id="Description" name="Description" spellcheck="false" maxlength="255" class="block s-full bg-slate-50 h-36 sm:text-sm sm:leading-6 rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600"><?php echo $activityData["Descrizione"] ?></textarea>
+                <?php if ($isProprietario) { ?>
+                    <!--- Sta visualizzando il capo-->
+                    <select id="Associazione" name="Associazione" selected="<?php echo $activityData['Assegnato'] ?>" class="block w-full bg-slate-50 h-10 sm:text-sm sm:leading-6 rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600">
+                        <option value="None">-</option>
+                        <?php foreach ($UserInTeam as $User) { ?>
+                            <option value="<?php echo $User['ID']; ?>" <?php echo ($activityData["Assegnato"] == $User['Username'] ? "selected" : "") ?>><?php echo $User['Username']; ?></option>
+                        <?php } ?>
+                    </select>
+                <?php } elseif ($activityData["Assegnato"] === $_SESSION['username']) { ?>
+                    <!--- Sta visualizzando l'utente in questione-->
+                    <div class="flex">
+                        <div class="block w-40 bg-slate-50 h-10 sm:text-sm sm:leading-6 rounded-md p-1.5 text-gray-900 shadow-sm">Assegnato a te</div>
+                        <?php if ($activityData["Stato"] !== "Fatto") { ?>
+                            <button type="button" class="flex-auto ml-4 justify-center rounded-md bg-yellow-800 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-yellow-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Non lo posso più fare io</button>
+                        <?php } ?>
+                    </div>
+                <?php } elseif ($activityData["Assegnato"] === '' || $activityData["Assegnato"] === null) { ?>
+                    <!--- Sta visualizzando un altro utente-->
+                    <div class="flex">
+                        <div class="block w-40 bg-slate-50 h-10 sm:text-sm sm:leading-6 rounded-md p-1.5 text-gray-900 shadow-sm">-</div>
+                        <?php if ($activityData["Stato"] !== "Fatto") { ?>
+                            <button type="button" class="flex-auto ml-4 justify-center rounded-md bg-green-800 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Lo faccio io</button>
+                        <?php } ?>
+                    </div>
+                <?php } else { ?>
+                    <div class="block w-40 bg-slate-50 h-10 sm:text-sm sm:leading-6 rounded-md p-1.5 text-gray-900 shadow-sm"><?php echo $activityData["Assegnato"] ?></div>
+                <?php } ?>
+                <!--  é Stato assegnato --->
             </div>
+        </div>
 
+        <!-- Form button --->
         <div class="px-4 pt-2 sm:gap-4 sm:px-0 border-t divide-gray-100">
-                <button type="submit" class="flex-auto justify-center mt-2 rounded-md bg-blue-800 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Aggiorna dati team</button>
-                <button onclick="handleDeleteTeam()" type="button" class="flex-auto justify-center rounded-md bg-red-800 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Elimina Team</button>
-            </div>
+            <button type="submit" class="flex-auto justify-center mt-2 rounded-md bg-blue-800 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Aggiorna dati del attivita</button>
+            <button onclick="handleDelete()" type="button" class="flex-auto justify-center rounded-md bg-red-800 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Elimina attivita</button>
+        </div>
     </form>
 </body>

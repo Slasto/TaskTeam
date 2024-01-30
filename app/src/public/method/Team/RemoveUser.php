@@ -29,7 +29,7 @@ require_once "./../../../private/Database.php";
 $stmt = $pdo->prepare("DELETE FROM UserInTeam WHERE TeamID = :Team AND UserID = :User");
 $stmt->execute([
     "Team" => $TeamID,
-    "User" => $_SESSION['user_id']
+    "User" => $_SESSION['username']
 ]);
 echo "1";
 unset($pdo);

@@ -35,7 +35,7 @@ if (!($stmt->fetchAll(PDO::FETCH_ASSOC))) {
 }
 
 //Get delle attivita
-$stmt = $pdo->prepare("SELECT * FROM Attivita WHERE FK_TeamID = :TeamID");
+$stmt = $pdo->prepare("SELECT * FROM Attivita WHERE FK_TeamID = :TeamID ORDER BY Stato");
 $stmt->execute([
   "TeamID" => $TeamID
 ]);
@@ -50,14 +50,8 @@ $stmt->execute([
 $TeamData = $stmt->fetchAll(PDO::FETCH_ASSOC)[0];
 $isAdmin = $TeamData["FK_UsernameProprietario"] == $_SESSION["username"];
 
-function cmp($a, $b)
-{
-  if ($a["Stato"] > $b["Stato"]) {
-    return 1;
-  }
-  return 0;
-}
 
+/*
 usort($ListaAttivita, function ($a, $b) {
   $order = array('Da fare', 'In corso', 'Fatto');
   $aIndex = array_search($a["Stato"], $order);
@@ -70,6 +64,7 @@ usort($ListaAttivita, function ($a, $b) {
     return 0;
   }
 });
+*/
 $i = 0;
 ?>
 
@@ -192,7 +187,7 @@ $i = 0;
       data = document.getElementById("Date").value; //Data gia validata nel campo
 
       //controllo titolo
-      if (!/^[\w\s0-9]{1,32}$/.test(titolo))
+      if (!/^[\w\s0-9]{1,255}$/.test(titolo))
         return false;
 
       //controllo descrizione
@@ -208,7 +203,7 @@ $i = 0;
       let params = new URLSearchParams();
       params.append("Titolo", titolo);
       params.append("Descrizione", descrizione);
-      params.append("Data", data);
+      params.append("Scadenza", data);
       params.append("TeamID", <?php echo $TeamID ?>);
 
       fetch("/method/Attivita/Create.php", {
@@ -257,7 +252,7 @@ $i = 0;
                     <!--Nome-->
                     <div class="sm:mx-auto sm:w-full sm:max-w-sm">
                       <label for="nomeAttivita" class="space-y-6 text-sm font-medium leading-6 text-gray-900 flex items-center justify-between">Nome</label>
-                      <input id="nomeAttivita" name="nomeAttivita" type="text" maxlength="32" required class="block w-full space-y-6 sm:text-sm sm:leading-6 rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600">
+                      <input id="nomeAttivita" name="nomeAttivita" type="text" maxlength="255" required class="block w-full space-y-6 sm:text-sm sm:leading-6 rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600">
                     </div>
 
                     <!--Data-->

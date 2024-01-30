@@ -9,7 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] != "POST") {
     return;
 }
 
-if (!isset($_SESSION['logged_in']) || !isset($_POST["Titolo"]) || !isset($_POST["Descrizione"]) || !isset($_POST["Data"]) || !isset($_POST["TeamID"])) {
+if (!isset($_SESSION['logged_in']) || !isset($_POST["Titolo"]) || !isset($_POST["Descrizione"]) || !isset($_POST["Scadenza"]) || !isset($_POST["TeamID"])) {
     header("HTTP/1.0 400 Bad Request");
     echo "0";
     exit();
@@ -17,7 +17,7 @@ if (!isset($_SESSION['logged_in']) || !isset($_POST["Titolo"]) || !isset($_POST[
 
 $title = $_POST["Titolo"];
 $description = ($_POST["Descrizione"] == "") ? "None" : $_POST["Descrizione"];
-$expireData = $_POST["Data"];
+$expireData = $_POST["Scadenza"];
 $TeamID = $_POST["TeamID"];
 
 //Verifica dati

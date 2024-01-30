@@ -1,7 +1,7 @@
 <?php
 function is_valid_activity_title($title)
 {
-    $pattern = '/^[\w\s0-9]{1,32}$/';
+    $pattern = '/^[\w\s0-9]{1,255}$/';
     if (preg_match($pattern, $title))
         return true;
     return false;
@@ -30,4 +30,11 @@ function is_valid_activity_done_date($doneDate, $expireDate)
     $expireDate = DateTime::createFromFormat('Y-m-d', $expireDate, new DateTimeZone('Europe/Rome'));
 
     return $expireDate >= $doneDate;
+}
+
+function is_valid_activity_status($stato){
+    if ( $stato!=="Da fare"  || $stato!=="In corso" ||$stato==="Fatto") {
+        return false;
+    }
+    return true;
 }
