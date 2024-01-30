@@ -81,9 +81,21 @@ switch ($_POST["Admin"]) {
             exit();
         }
 
-        $stmt = $pdo->prepare("SELECT User FROM UserInTeam WHERE UserID = :u AND TeamID = :t");
+        //L'utente è nel team?
+        $stmt = $pdo->prepare("SELECT ID FROM User WHERE Username = :u");
         $stmt->execute([
             "u" => $_POST["Admin"],
+        ]);
+        $userID = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if (!$userID) {
+            echo "0";
+            exit();
+        }
+        $userID = $userID[0]["ID"];
+
+        $stmt = $pdo->prepare("SELECT ID FROM UserInTeam WHERE UserID = :u AND TeamID = :t");
+        $stmt->execute([
+            "u" => $userID,
             "t" => $TeamID
         ]);
 
@@ -103,12 +115,5 @@ switch ($_POST["Admin"]) {
         break;
 }
 
-
-
-
-//Controllo che l'utente è nel team
-$stmt = $pdo->prepare("SELECT ID FROM UserInTeam WHERE UserID = :u AND TeamID = :t");
-$stmt->execute([
-    "u" => $_SESSION["user_id"],
-    "t" => $TeamID
-]);
+unset($stmt);
+unset($pdo);
