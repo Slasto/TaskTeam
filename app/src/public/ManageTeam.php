@@ -193,7 +193,7 @@ unset($stmt);
             <dl class="divide-y divide-gray-100">
                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt class="text-sm font-bold leading-6 text-gray-900">Nome Team:</dt>
-                    <input id="Nome" name="Nome" type="text" maxlength="32" value="<?php echo $TeamData["Nome"] ?>" required class="block flex-auto bg-slate-50 rounded-md border-0 p-1.5 text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6">
+                    <input id="Nome" name="Nome" type="text" maxlength="32" value="<?php echo $TeamData["Nome"] ?>" required class="block flex-auto bg-slate-50 rounded-md border-0 p-1.5 text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6">
                 </div>
             </dl>
         </div>

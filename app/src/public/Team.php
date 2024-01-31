@@ -194,7 +194,7 @@ unset($stmt);
                                         <div class="sm:mx-auto sm:w-full sm:max-w-sm">
                                             <label for="joinTeamCode" class=" space-y-6 text-sm font-medium leading-6 text-gray-900 flex items-center justify-between">Codice
                                                 invito</label>
-                                            <input id="joinTeamCode" name="joinTeamCode" type="text" required class="block w-full space-y-6 sm:text-sm sm:leading-6 rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600">
+                                            <input id="joinTeamCode" name="joinTeamCode" type="text" required class="block space-y-6 sm:text-sm sm:leading-6 rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600">
                                         </div>
 
                                     </form>
@@ -272,7 +272,7 @@ unset($stmt);
                             alert("Non è stato possibile creare un Team");
                             break;
                         default:
-                        location.reload();
+                            location.reload();
                             break;
                     }
                 })
@@ -309,7 +309,7 @@ unset($stmt);
                                         <div class="sm:mx-auto sm:w-full sm:max-w-sm mt-3">
                                             <label for="Description" class="block space-y-6 text-sm font-medium leading-6 text-gray-900 ms-center justify-between">Breve
                                                 descrizione (opzionale)</label>
-                                            <textarea id="Description" name="Description" spellcheck="false" maxlength="255" class="block s-full  sm:text-sm sm:leading-6 rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600"></textarea>
+                                            <textarea id="Description" name="Description" spellcheck="false" maxlength="255" class="block s-full sm:text-sm sm:leading-6 rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600"></textarea>
                                         </div>
                                     </form>
                                 </div>

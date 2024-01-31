@@ -166,7 +166,7 @@ if (!$userProfile) { //array è vuoto
         <form class="mt-6 border-t divide-y divide-gray-100" action="javascript:handleSubmit('Email')" method="POST" onsubmit="return validateEmail()">
             <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                 <div class="text-sm font-bold leading-6 text-gray-900">Email:</div>
-                <input id="email" name="email" type="email" maxlength="51" autocomplete="email" value="<?php echo $userProfile["Email"] ?>" required class="block flex-auto bg-slate-50 rounded-md border-0 py-1.5 text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6">
+                <input id="email" name="email" type="email" maxlength="51" autocomplete="email" value="<?php echo $userProfile["Email"] ?>" required class="block flex-auto bg-slate-50 rounded-md border-0 py-1.5 text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300  focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6">
             </div>
             <button type="submit" class="flex-auto justify-center mt-2 rounded-md bg-blue-800 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Cambia email</button>
         </form>
@@ -180,14 +180,14 @@ if (!$userProfile) { //array è vuoto
                 <div>
                     <label for="password" class="block text-sm font-medium leading-6 text-gray-700">Nuova password</label>
                     <div class="mt-2">
-                        <input id="password" name="password" type="password" required class="block flex-auto bg-slate-50 rounded-md border-0 py-1.5 text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6">
+                        <input id="password" name="password" type="password" required class="block flex-auto bg-slate-50 rounded-md border-0 py-1.5 text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300  focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6">
                     </div>
                 </div>
                 <!--Password 2-->
                 <div>
                     <label for="confirm_password" class="block text-sm font-medium leading-6 text-gray-700">Conferma Password</label>
                     <div class="mt-2">
-                        <input id="confirm_password" name="confirm_password" type="password" required class="block flex-auto bg-slate-50 rounded-md border-0 py-1.5 text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6">
+                        <input id="confirm_password" name="confirm_password" type="password" required class="block flex-auto bg-slate-50 rounded-md border-0 py-1.5 text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300  focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6">
                     </div>
                 </div>
                 <!--Password Confirm button-->

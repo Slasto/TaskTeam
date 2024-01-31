@@ -33,7 +33,6 @@ $stmt->execute([
 ]);
 
 if (!($stmt->fetchAll(PDO::FETCH_ASSOC))) {
-    header("HTTP/1.0 403 Forbidden");
     header("location: /Team");
     exit();
 };
@@ -173,13 +172,46 @@ unset($stmt);
                         break;
                     default:
                     case "0": //frontend e backend fanno gli stessi controlli sui dati, questo caso non si dovrebbe mai verificare
-                        alert("Errore durante la cancellazione del team, la invitiamo a riprovare più tradi");
+                        alert("Errore durante l cancellazione del team, la invitiamo a riprovare più tradi");
                         break;
                 }
             }).catch(error => {
                 console.error('error!', error);
             });
         }
+        <?php if (!$isProprietario) { ?>
+
+            function handleModifyAssegnazione(switchTo) {
+                let params = new URLSearchParams();
+                params.append("TeamID", <?php echo $TeamID; ?>);
+                params.append("AttivitaID", <?php echo $ActivityID; ?>)
+                params.append("SwitchTo", switchTo);
+                fetch("/method/Attivita/EditAssegnazione.php", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: params
+                }).then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                }).then(data => {
+                    switch (data) {
+                        case "1":
+                            break;
+                        default:
+                        case "0": //frontend e backend fanno gli stessi controlli sui dati, questo caso non si dovrebbe mai verificare
+                            alert("Errore durante la assegnazione, la invitiamo a riprovare più tradi");
+                            break;
+                    }
+                    location.reload()
+                }).catch(error => {
+                    console.error('error!', error);
+                });
+            }
+        <?php } ?>
     </script>
     <!-- Sidebar -->
     <object data="/view/SideBar?Title=Dettaglio%20attivita" width="100%" height="100%"></object>
@@ -197,7 +229,7 @@ unset($stmt);
             <dl class="divide-y divide-gray-100">
                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt class="text-sm font-bold leading-6 text-gray-900">Titolo:</dt>
-                    <input id="titolo" name="titolo" type="text" maxlength="255" value="<?php echo $activityData["Titolo"] ?>" required class="w-auto flex-auto bg-slate-50 rounded-md border-0 p-1.5 text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6">
+                    <input id="titolo" name="titolo" type="text" maxlength="255" value="<?php echo $activityData["Titolo"] ?>" required class="w-auto flex-auto bg-slate-50 rounded-md border-0 p-1.5 text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6">
                 </div>
             </dl>
         </div>
@@ -238,7 +270,11 @@ unset($stmt);
                 <?php } ?>
             </div>
         </div>
-
+        <!-- Form button --->
+        <div class="px-4 pt-2 sm:gap-4 sm:px-0 border-t divide-gray-100">
+            <button type="submit" class="flex-auto justify-center mt-2 rounded-md bg-blue-800 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Aggiorna dati del attivita</button>
+            <button onclick="handleDelete()" type="button" class="flex-auto justify-center rounded-md bg-red-800 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Elimina attivita</button>
+        </div>
         <!--Assegnazione-->
         <div class="mt-6 border-t divide-y divide-gray-100" action="javascript:handleSubmit('Email')" method="POST" onsubmit="return validateEmail()">
             <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -246,17 +282,52 @@ unset($stmt);
                 <?php if ($isProprietario) { ?>
                     <!--- Sta visualizzando il capo-->
                     <select id="Associazione" name="Associazione" selected="<?php echo $activityData['Assegnato'] ?>" class="block w-full bg-slate-50 h-10 sm:text-sm sm:leading-6 rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600">
-                        <option value="None">-</option>
+                        <option value="">-</option>
                         <?php foreach ($UserInTeam as $User) { ?>
                             <option value="<?php echo $User['ID']; ?>" <?php echo ($activityData["Assegnato"] == $User['Username'] ? "selected" : "") ?>><?php echo $User['Username']; ?></option>
                         <?php } ?>
                     </select>
+                    <script type>
+                        document.getElementById("Associazione").onchange = changeListener;
+
+                        function changeListener() {
+                            let params = new URLSearchParams();
+                            params.append("TeamID", <?php echo $TeamID; ?>);
+                            params.append("AttivitaID", <?php echo $ActivityID; ?>)
+                            params.append("SwitchTo", 1);
+                            params.append("Admin", document.getElementById("Associazione").value);
+                            fetch("/method/Attivita/EditAssegnazione.php", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/x-www-form-urlencoded"
+                                },
+                                body: params
+                            }).then(response => {
+                                if (!response.ok) {
+                                    throw new Error(`HTTP error! status: ${response.status}`);
+                                }
+                                return response.text();
+                            }).then(data => {
+                                switch (data) {
+                                    case "1":
+                                        break;
+                                    default:
+                                    case "0": //frontend e backend fanno gli stessi controlli sui dati, questo caso non si dovrebbe mai verificare
+                                        alert("Errore durante l assegnazione, la invitiamo a riprovare più tradi");
+                                        break;
+                                }
+                                location.reload()
+                            }).catch(error => {
+                                console.error('error!', error);
+                            });
+                        }
+                    </script>
                 <?php } elseif ($activityData["Assegnato"] === $_SESSION['username']) { ?>
                     <!--- Sta visualizzando l'utente in questione-->
                     <div class="flex">
                         <div class="block w-40 bg-slate-50 h-10 sm:text-sm sm:leading-6 rounded-md p-1.5 text-gray-900 shadow-sm">Assegnato a te</div>
                         <?php if ($activityData["Stato"] !== "Fatto") { ?>
-                            <button type="button" class="flex-auto ml-4 justify-center rounded-md bg-yellow-800 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-yellow-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Non lo posso più fare io</button>
+                            <button type="button" onclick='handleModifyAssegnazione(-1)' class="flex-auto ml-4 justify-center rounded-md bg-yellow-800 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-yellow-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Non lo posso più fare io</button>
                         <?php } ?>
                     </div>
                 <?php } elseif ($activityData["Assegnato"] === '' || $activityData["Assegnato"] === null) { ?>
@@ -264,20 +335,13 @@ unset($stmt);
                     <div class="flex">
                         <div class="block w-40 bg-slate-50 h-10 sm:text-sm sm:leading-6 rounded-md p-1.5 text-gray-900 shadow-sm">-</div>
                         <?php if ($activityData["Stato"] !== "Fatto") { ?>
-                            <button type="button" class="flex-auto ml-4 justify-center rounded-md bg-green-800 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Lo faccio io</button>
+                            <button type="button" onclick="handleModifyAssegnazione(1)" class="flex-auto ml-4 justify-center rounded-md bg-green-800 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Lo faccio io</button>
                         <?php } ?>
                     </div>
                 <?php } else { ?>
                     <div class="block w-40 bg-slate-50 h-10 sm:text-sm sm:leading-6 rounded-md p-1.5 text-gray-900 shadow-sm"><?php echo $activityData["Assegnato"] ?></div>
                 <?php } ?>
-                <!--  é Stato assegnato --->
             </div>
-        </div>
-
-        <!-- Form button --->
-        <div class="px-4 pt-2 sm:gap-4 sm:px-0 border-t divide-gray-100">
-            <button type="submit" class="flex-auto justify-center mt-2 rounded-md bg-blue-800 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Aggiorna dati del attivita</button>
-            <button onclick="handleDelete()" type="button" class="flex-auto justify-center rounded-md bg-red-800 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Elimina attivita</button>
         </div>
     </form>
 </body>
