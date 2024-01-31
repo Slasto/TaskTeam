@@ -6,32 +6,34 @@ if (!isset($_SESSION["logged_in"])) {
 }
 
 if (!isset($_GET["TeamID"])) {
-  header("HTTP/1.0 400 Bad Request");
-  header("location: /Team");
-  exit();
-}
+  //Team Privato del utente
+  require_once "../private/Database.php";
+  $stmt = $pdo->query("SELECT ID FROM Team WHERE FK_UsernameProprietario = '" . $_SESSION["username"] . "' AND Nome='Privato'");
+  $TeamID = ($stmt->fetchAll(PDO::FETCH_ASSOC))[0]["ID"];
+  $isPrivate = true;
+} else {
+  //Team Condiviso del utente
+  $TeamID = $_GET["TeamID"];
+  if (!is_numeric($TeamID)) {
+    header("location: /Team");
+    exit();
+  }
+  $TeamID = intval($TeamID);
 
-$TeamID = $_GET["TeamID"];
-if (!is_numeric($TeamID)) {
-  header("location: /Team");
-  exit();
-}
-$TeamID = intval($TeamID);
+  require_once "../private/Database.php";
 
+  //è l'utente nel team?
+  $stmt = $pdo->prepare("SELECT ID FROM UserInTeam WHERE TeamID = :TeamID AND UserID = :UserID");
+  $stmt->execute([
+    "TeamID" => $TeamID,
+    "UserID" => $_SESSION["user_id"]
+  ]);
 
-
-require_once "../private/Database.php";
-
-//è l'utente nel team?
-$stmt = $pdo->prepare("SELECT ID FROM UserInTeam WHERE TeamID = :TeamID AND UserID = :UserID");
-$stmt->execute([
-  "TeamID" => $TeamID,
-  "UserID" => $_SESSION["user_id"]
-]);
-
-if (!($stmt->fetchAll(PDO::FETCH_ASSOC))) {
-  header("location: /Team");
-  exit();
+  if (!($stmt->fetchAll(PDO::FETCH_ASSOC))) {
+    header("location: /Team");
+    exit();
+  }
+  $isPrivate = false;
 }
 
 //Get delle attivita
@@ -81,7 +83,7 @@ $i = 0;
 
 <body class="bg-gray-100">
   <!-- Sidebar -->
-  <object data="/view/SideBar?Title=Attivita" width="100%" height="100%"></object>
+  <object data="/view/SideBar?Title=<?php echo ($isPrivate ? 'Area%20riservata' : 'Attivita%20del%20team') ?>" width="100%" height="100%"></object>
 
   <!-- Contenuto principale -->
   <div class="mx-auto max-w-7xl p-6 sm:px-6 lg:px-8 mb-2">
@@ -99,7 +101,7 @@ $i = 0;
 
     <!-- 3 colonne Attività --->
     <div class="flex border rounded-lg py-3 shadow-sm">
-      <!-- Colonna 1 -->
+      <!-- Da fare -->
       <div class="flex-auto mx-3 border rounded-lg bg-white shadow-md">
         <div class="p-4">
           <p class="font-bold">Da fare:</p>
@@ -111,7 +113,7 @@ $i = 0;
             <div>
               <span class="text-lg"><?php echo $ListaAttivita[$i]['Titolo'] . PHP_EOL; ?></span>
               <div class="border-t-2 border-dashed"> Scadenza: <?php echo $ListaAttivita[$i]["Scadenza"] ? $ListaAttivita[$i]["Scadenza"] : "non assegnata" ?></div>
-              <div> Assegnato a: <?php echo $ListaAttivita[$i]["Assegnato"] ? $ListaAttivita[$i]["Assegnato"] : "non assegnata" ?></div>
+              <?php echo ($isPrivate ? "" : "<div> Assegnato a: " . ($ListaAttivita[$i]["Assegnato"] ? $ListaAttivita[$i]["Assegnato"] : "non assegnata") . "</div>") ?>
             </div>
             <button class="rounded-md hover:border-collapse shadow-md border p-0.5 hover:bg-slate-200" onclick="ModifyDetails(<?php echo $ListaAttivita[$i]['ID'] ?>)">
               <img class="size-7 bg-blue-00" src="/icon/Modify.svg" alt="mod">
@@ -120,7 +122,7 @@ $i = 0;
         <?php } ?>
       </div>
 
-      <!-- Colonna 2 -->
+      <!-- In corso -->
       <div class="flex-auto mx-3 border rounded-lg bg-white shadow-md">
         <div class=" p-4">
           <p class="font-bold">In corso:</p>
@@ -133,7 +135,7 @@ $i = 0;
             <div>
               <span class="text-lg"><?php echo $ListaAttivita[$i]['Titolo'] . PHP_EOL; ?></span>
               <div class="border-t-2 border-dashed"> Scadenza: <?php echo $ListaAttivita[$i]["Scadenza"] ? $ListaAttivita[$i]["Scadenza"] : "non assegnata" ?></div>
-              <div> Assegnato a: <?php echo $ListaAttivita[$i]["Assegnato"] ? $ListaAttivita[$i]["Assegnato"] : "non assegnata" ?></div>
+              <?php echo ($isPrivate ? "" : "<div> Assegnato a: " . ($ListaAttivita[$i]["Assegnato"] ? $ListaAttivita[$i]["Assegnato"] : "non assegnata") . "</div>") ?>
             </div>
             <button class="rounded-md hover:border-collapse shadow-md border p-0.5 hover:bg-slate-200" onclick="ModifyDetails(<?php echo $ListaAttivita[$i]['ID'] ?>)">
               <img class="size-7 bg-blue-00" src="/icon/Modify.svg" alt="mod">
@@ -142,7 +144,7 @@ $i = 0;
         <?php } ?>
       </div>
 
-      <!-- Colonna 3 -->
+      <!-- Fatto -->
       <div class="flex-auto font-medium mx-3 border rounded-lg bg-white shadow-md">
         <div class="p-4">
           <p class="font-bold">Fatto:</p>
@@ -154,7 +156,7 @@ $i = 0;
             <div>
               <span class="text-lg"><?php echo $ListaAttivita[$i]['Titolo'] . PHP_EOL; ?></span>
               <div class="border-t-2 border-dashed"> Scadenza: <?php echo $ListaAttivita[$i]["Scadenza"] ? $ListaAttivita[$i]["Scadenza"] : "non assegnata" ?></div>
-              <div> Assegnato a: <?php echo $ListaAttivita[$i]["Assegnato"] ? $ListaAttivita[$i]["Assegnato"] : "non assegnata" ?></div>
+              <?php echo ($isPrivate ? "" : "<div> Assegnato a: " . ($ListaAttivita[$i]["Assegnato"] ? $ListaAttivita[$i]["Assegnato"] : "non assegnata") . "</div>") ?>
             </div>
             <button class="rounded-md hover:border-collapse shadow-md border p-0.5 hover:bg-slate-200" onclick="ModifyDetails(<?php echo $ListaAttivita[$i]['ID'] ?>)">
               <img class="size-7 bg-blue-00" src="/icon/Modify.svg" alt="mod">
