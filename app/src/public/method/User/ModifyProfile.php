@@ -28,6 +28,13 @@ switch ($_GET["change"]) {
     case 'Email':
         if (!isset($_POST["email"]))
             bad_request();
+        if(!is_valid_email($_POST["email"])){
+            $risposta = array(
+                'stato' => 0,
+                'messaggio' => "Email non valida"
+            );
+            break;
+        }
         $stmt = $pdo->prepare("UPDATE User SET  Email = :email  WHERE Username = :username AND ID = :id");
         $stmt->execute([
             "email" => $_POST["email"],
@@ -44,17 +51,17 @@ switch ($_GET["change"]) {
         if (!isset($_POST["password"]))
             bad_request();
 
-        $stmt = $pdo->prepare("SELECT Salt FROM User WHERE Username = :username AND ID = :id");
-        $stmt->execute([
-            "username" => $_SESSION["username"],
-            "id" => $_SESSION["user_id"]
-        ]);
-        $Salt = ($stmt->fetchAll(PDO::FETCH_ASSOC))[0]["Salt"];
+        if(!is_valid_password($_POST["password"])){
+            $risposta = array(
+                'stato' => 0,
+                'messaggio' => "password non valida"
+            );
+            break;
+        }
 
         $stmt = $pdo->prepare("UPDATE User SET HashPw = :HashPw WHERE Username = :username AND ID = :id");
-
         $stmt->execute([
-            "HashPw" => password_hash($_SESSION["username"] . ":" . $Salt, PASSWORD_DEFAULT),
+            "HashPw" => password_hash($_POST["password"], PASSWORD_DEFAULT),
             "username" => $_SESSION["username"],
             "id" => $_SESSION['user_id']
         ]);
@@ -68,6 +75,6 @@ switch ($_GET["change"]) {
         break;
 };
 
+echo json_encode($risposta, JSON_PRETTY_PRINT);
 unset($pdo);
 unset($stmt);
-echo json_encode($risposta, JSON_PRETTY_PRINT);

@@ -274,13 +274,17 @@ $Doing = 0;
       data = document.getElementById("Date").value; //Data gia validata nel campo
 
       //controllo titolo
-      if (!/^[\w\s0-9]{1,255}$/.test(titolo))
+      if (!/^[\w\s0-9]{1,255}$/.test(titolo)){
+        alert("Titolo non valido, non sono consentiti ne caratteri speciali ne accentati")
         return false;
+      }
 
       //controllo descrizione
-      let re = /^[\u00C0-\u017Fa-zA-Z\s.,?!-_]$/;
-      if (!re.test(descrizione))
+      let re = /^[\u00C0-\u017Fa-zA-Z\s!@'#$%^*\-_|0-9]{0,255}$/;
+      if (!re.test(descrizione)){
+        alert("Descrizione non valida")
         return false;
+      }
 
 
       return true;

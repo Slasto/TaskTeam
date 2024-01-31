@@ -37,11 +37,12 @@ unset($stmt);
         <!-- INIZIO tabella elenco Team INIZIO --->
         <script type="text/javascript">
             function DeleteFromTeam(intID) {
-
-                if (!confirm("Sei sicuro di uscire dal Team?"))
+                if (!confirm("Sei sicuro di uscire dal Team?")){
                     return;
+                }
                 let params = new URLSearchParams();
-                params.append("TeamID", intID);
+                params.append("TeamID", intID.toString());
+                console.log(params);
                 fetch("/method/Team/RemoveUser.php", {
                         method: 'POST',
                         headers: {

@@ -2,7 +2,6 @@
 session_start();
 
 header('Content-Type: text/html');
-
 if ($_SERVER["REQUEST_METHOD"] != "POST") {
     header("HTTP/1.0 405 Method Not Allowed");
     echo "0";
@@ -29,10 +28,8 @@ require_once "./../../../private/Database.php";
 $stmt = $pdo->prepare("DELETE FROM UserInTeam WHERE TeamID = :Team AND UserID = :User");
 $stmt->execute([
     "Team" => $TeamID,
-    "User" => $_SESSION['username']
+    "User" => $_SESSION['user_id']
 ]);
 echo "1";
 unset($pdo);
 unset($stmt);
-
-

@@ -23,7 +23,7 @@ $TeamID = $_POST["TeamID"];
 //Verifica dati
 require_once "./../../../private/ActivityDataValidation.php";
 if (!is_numeric($TeamID) || !is_valid_activity_title($title) || !is_valid_activity_description($description) || !is_valid_activity_expire_date($expireData)) {
-    echo 0;
+    echo "-1";
     exit();
 }
 $TeamID = intval($TeamID);
