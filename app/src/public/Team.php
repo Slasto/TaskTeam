@@ -243,7 +243,7 @@ unset($stmt);
 
             re = /^[\u00C0-\u017Fa-zA-Z\s!@#$%^*\-_|0-9]{0,255}$/
             if (!re.test(Description)) {
-                alert("Descrizione non valida non valido, non tutti i caratteri speciali sono consentiti");
+                alert("Descrizione non valida non valida, non tutti i caratteri speciali sono consentiti");
                 return false;
             }
 

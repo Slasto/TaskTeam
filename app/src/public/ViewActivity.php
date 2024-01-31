@@ -282,7 +282,7 @@ $Doing = 0;
       //controllo descrizione
       let re = /^[\u00C0-\u017Fa-zA-Z\s!@'#$%^*\-_|0-9]{0,255}$/;
       if (!re.test(descrizione)){
-        alert("Descrizione non valida")
+        alert("Descrizione non valida, non tutti i caratteri sono consentiti")
         return false;
       }
 
