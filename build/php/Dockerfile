@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install npm -y
 RUN apt-get install npm
 
 # --Installazione Tailwind---
-RUN npm install -D tailwindcss @tailwindcss/forms
+RUN npm install -D tailwindcss @tailwindcss/forms chart.js
 
 # ---Importa nuova configurazione su apache2---
 RUN a2enmod rewrite 

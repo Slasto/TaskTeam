@@ -51,23 +51,10 @@ $stmt->execute([
 ]);
 $TeamData = $stmt->fetchAll(PDO::FETCH_ASSOC)[0];
 $isAdmin = $TeamData["FK_UsernameProprietario"] == $_SESSION["username"];
-
-
-/*
-usort($ListaAttivita, function ($a, $b) {
-  $order = array('Da fare', 'In corso', 'Fatto');
-  $aIndex = array_search($a["Stato"], $order);
-  $bIndex = array_search($b["Stato"], $order);
-  if ($aIndex > $bIndex) {
-    return 1;
-  } elseif ($aIndex < $bIndex) {
-    return -1;
-  } else {
-    return 0;
-  }
-});
-*/
-$i = 0;
+unset($stmt);
+$Done = 0;
+$Todo = 0;
+$Doing = 0;
 ?>
 
 <!DOCTYPE html>
@@ -75,7 +62,7 @@ $i = 0;
 <head>
   <title><?php echo $TeamData["Nome"] ?></title>
   <link href="/css/output.css" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script src=" https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js "></script>
   <meta charset="UTF-8">
   <meta http-equiv="Content-Language" content="it">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -106,9 +93,10 @@ $i = 0;
         <div class="p-4">
           <p class="font-bold">Da fare:</p>
         </div>
-        <?php for (; $i < sizeof($ListaAttivita); $i++) {
+        <?php for ($i = 0; $i < sizeof($ListaAttivita); $i++) {
           if ($ListaAttivita[$i]['Stato'] !== 'Da fare')
-            break; ?>
+            break;
+          $Todo++; ?>
           <div class="p-3 flex mx-1.5 font-medium justify-between items-center border-b">
             <div>
               <span class="text-lg"><?php echo $ListaAttivita[$i]['Titolo'] . PHP_EOL; ?></span>
@@ -130,7 +118,8 @@ $i = 0;
         <?php for (; $i < sizeof($ListaAttivita); $i++) {
           if ($ListaAttivita[$i]['Stato'] !== 'In corso') {
             break;
-          } ?>
+          }
+          $Doing++; ?>
           <div class="p-3 flex mx-1.5 font-medium justify-between items-center border-b">
             <div>
               <span class="text-lg"><?php echo $ListaAttivita[$i]['Titolo'] . PHP_EOL; ?></span>
@@ -151,7 +140,8 @@ $i = 0;
         </div class="justify-between">
         <?php for (; $i < sizeof($ListaAttivita); $i++) {
           if ($ListaAttivita[$i]['Stato'] !== 'Fatto')
-            break; ?>
+            break;
+          $Done++; ?>
           <div class="p-3 flex mx-1.5 font-medium justify-between items-center border-b">
             <div>
               <span class="text-lg"><?php echo $ListaAttivita[$i]['Titolo'] . PHP_EOL; ?></span>
@@ -165,6 +155,101 @@ $i = 0;
         <?php } ?>
       </div>
     </div>
+
+    <!-- Report -->
+    <?php if ($i <= 0) {
+      unset($pdo);
+    } else { ?>
+      <div class="p-6 sm:px-0">
+        <h1 class="text-lg font-semibold leading-7 text-gray-900">Statistiche sul team</h1>
+        <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500">Di seguito troverai un riepilogo relativo al team</p>
+      </div>
+      <div class="flex space-x-2">
+        <div class="border-2 bg-white p-3 rounded-md">
+          <canvas id="myDoughnut"></canvas>
+        </div>
+        <div class="border-2 bg-white p-3 rounded-md" style="width: 50%;">
+          <canvas id="myLine"></canvas>
+        </div>
+      </div>
+
+      <?php
+      // Crea un vettore vuoto
+      $vettore = array();
+
+      // Prepara la query SQL per ottenere l'incremento delle attività nelle ultime settimane
+      $query = "SELECT DATE(FattoIl) AS Data, COUNT(*) AS NumeroAttivita FROM Attivita WHERE FattoIl BETWEEN DATE_SUB(CURDATE(), INTERVAL 30 DAY) AND CURDATE() AND FK_TeamID = :teamID GROUP BY Data ORDER BY Data ASC";
+      $stmt = $pdo->prepare($query);
+      $stmt->bindParam(':teamID', $TeamID);
+
+      // Esegui la query SQL
+      $stmt->execute();
+
+      // Ottieni il risultato della query
+      $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+      $String_date = "";
+      $String_done = "";
+      for ($i = 0; $i < count($result); $i++) {
+        $String_date = $String_date . "'" . $result[$i]['Data'] . "'";
+        $String_done = $String_done . $result[$i]['NumeroAttivita'];
+        if (($i + 1) < count($result)) { //se c'è ancora un elemento...
+          $String_date = $String_date . ",";
+          $String_done = $String_done . ",";
+        }
+      }
+      unset($pdo);
+      ?>
+
+      <script type="text/javascript">
+        //grafico lineare
+        var ctx = document.getElementById('myLine').getContext('2d');
+        var chart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: [<?php echo $String_date ?>],
+            datasets: [{
+              label: 'Attivita',
+              data: [<?php echo $String_done ?>],
+              borderColor: 'rgba(144, 238, 144)',
+              backgroundColor: 'rgb(162, 54, 235)',
+              fill: true,
+            }]
+          },
+          options: {
+            plugins: {
+              title: {
+                display: true,
+                text: 'Nuove attivita completate negli ultimi 30 giorni',
+              }
+            }
+          }
+        });
+        //Doughnut
+        const doughnut = document.getElementById('myDoughnut');
+        const dataSetDoughnut = {
+          labels: ['Da fare', 'In corso', 'Fatto'],
+          datasets: [{
+            label: 'Attivita',
+            data: [<?php echo $Todo . "," . $Doing . "," . $Done ?>],
+            backgroundColor: ['rgb(235, 54, 162)', 'rgb(54, 162, 235)', 'rgb(54, 235, 162 )'],
+          }]
+        }
+
+        new Chart(doughnut, {
+          type: 'doughnut',
+          data: dataSetDoughnut,
+          options: {
+            plugins: {
+              title: {
+                display: true,
+                text: 'Report stato attivita',
+              }
+            }
+          }
+        });
+      </script>
+    <?php } ?>
+    <!-- Fine Report -->
   </div>
 
   <script type="text/javascript">
@@ -283,9 +368,4 @@ $i = 0;
       </div>
     </div>
   </div>
-
-
-
-
-
 </body>
