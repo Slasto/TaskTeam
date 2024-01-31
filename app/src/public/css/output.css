@@ -1062,11 +1062,6 @@ select {
   height: 1.75rem;
 }
 
-.size-8 {
-  width: 2rem;
-  height: 2rem;
-}
-
 .size-fit {
   width: -moz-fit-content;
   width: fit-content;
