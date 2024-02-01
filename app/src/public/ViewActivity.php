@@ -62,7 +62,7 @@ $Doing = 0;
 <head>
   <title><?php echo $TeamData["Nome"] ?></title>
   <link href="/css/output.css" rel="stylesheet">
-  <script src=" https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js "></script>
+  <script src="/view/chart.umd.js"></script>
   <meta charset="UTF-8">
   <meta http-equiv="Content-Language" content="it">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
