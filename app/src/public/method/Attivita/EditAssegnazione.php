@@ -9,7 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] != "POST") {
     return;
 }
 
-if (!isset($_SESSION['logged_in']) || !isset($_POST["AttivitaID"]) || !isset($_POST["TeamID"]) || !isset($_POST["SwitchTo"])) {
+if (!isset($_SESSION['logged_in']) || !isset($_POST["AttivitaID"]) || !isset($_POST["TeamID"])) {
     header("HTTP/1.0 400 Bad Request");
     echo "0";
     exit();
@@ -17,14 +17,13 @@ if (!isset($_SESSION['logged_in']) || !isset($_POST["AttivitaID"]) || !isset($_P
 
 $TeamID = $_POST["TeamID"];
 $ActivityID = $_POST["AttivitaID"];
-$SwitchTo = $_POST["SwitchTo"];
-if (!is_numeric($TeamID) || !is_numeric($ActivityID) || !is_numeric($SwitchTo)) {
+if (!is_numeric($TeamID) || !is_numeric($ActivityID)) {
     echo "0";
     exit();
 }
 $TeamID = intval($TeamID);
 $ActivityID = intval($ActivityID);
-$SwitchTo = intval($SwitchTo);
+
 
 //Controllo che l'utente è nel team
 require_once "./../../../private/Database.php";
@@ -54,8 +53,17 @@ if (!$data) {
 switch (isset($_POST["Admin"])) {
     case false:
         //Richiesta di membro
+        if (!isset($_POST["SwitchTo"])) {
+            header("HTTP/1.0 400 Bad Request");
+            echo "0";
+            exit();
+        }
+        if (!is_numeric($_POST["SwitchTo"])) {
+            echo "0";
+            exit();
+        }
         $data = $data[0];
-
+        $SwitchTo = intval($_POST["SwitchTo"]);
         switch ($SwitchTo) {
             case '1':
                 //se sto tentando il set ma è gia stato assegnato a qualcun altro

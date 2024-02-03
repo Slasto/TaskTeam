@@ -2,7 +2,7 @@
 session_start();
 
 if (isset($_SESSION["logged_in"])) {
-    header("location: /home");
+    header("location: /ViewActivity");
     exit();
 }
 
@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $_SESSION["username"] = $username;
         $_SESSION['logged_in'] = true;
         $_SESSION['user_id'] = $userID;
-        header("Location: Home");
+        header("Location: /ViewActivity");
         exit();
     } else {
         $err = "Username o password non validi";
@@ -40,11 +40,6 @@ function validateCredentials($username, $password)
     return $userData["ID"];
 }
 
-/*TODO: implementare login sicuro:
-    Username->
-  <-Random,Salt
-    hash(Random,hash(Password,Salt)->
-*/
 ?>
 <!DOCTYPE html>
 
@@ -99,7 +94,6 @@ function validateCredentials($username, $password)
                 Non sei registrato?
                 <a href="Register" class="font-semibold leading-6 text-blue-400 hover:text-blue-600">Puoi farlo da qui!</a>
             </p>
-
         </div>
     </div>
 </body>

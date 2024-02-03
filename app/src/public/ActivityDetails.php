@@ -293,7 +293,6 @@ unset($stmt);
                                 let params = new URLSearchParams();
                                 params.append("TeamID", <?php echo $TeamID; ?>);
                                 params.append("AttivitaID", <?php echo $ActivityID; ?>)
-                                params.append("SwitchTo", 1);
                                 params.append("Admin", document.getElementById("Associazione").value);
                                 fetch("/method/Attivita/EditAssegnazione.php", {
                                     method: "POST",

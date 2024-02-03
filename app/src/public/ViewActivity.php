@@ -8,7 +8,7 @@ if (!isset($_SESSION["logged_in"])) {
 if (!isset($_GET["TeamID"])) {
   //Team Privato del utente
   require_once "../private/Database.php";
-  $stmt = $pdo->query("SELECT ID FROM Team WHERE FK_UsernameProprietario = '" . $_SESSION["username"] . "' AND Nome='Privato'");
+  $stmt = $pdo->query("SELECT ID FROM Team WHERE FK_UsernameProprietario = '" . $_SESSION["username"] . "' AND Nome='Privato' AND CodiceInvito IS NULL");
   $TeamID = ($stmt->fetchAll(PDO::FETCH_ASSOC))[0]["ID"];
   $isPrivate = true;
 } else {
@@ -274,14 +274,14 @@ $Doing = 0;
       data = document.getElementById("Date").value; //Data gia validata nel campo
 
       //controllo titolo
-      if (!/^[\w\s0-9]{1,255}$/.test(titolo)){
+      if (!/^[\w\s0-9]{1,255}$/.test(titolo)) {
         alert("Titolo non valido, non sono consentiti ne caratteri speciali ne accentati")
         return false;
       }
 
       //controllo descrizione
       let re = /^[\u00C0-\u017Fa-zA-Z\s!@'#$%^*\-_|0-9]{0,255}$/;
-      if (!re.test(descrizione)){
+      if (!re.test(descrizione)) {
         alert("Descrizione non valida, non tutti i caratteri sono consentiti")
         return false;
       }
