@@ -70,7 +70,7 @@ if (!is_valid_password($pwd)) {
 }
 
 // Se tutti i check sono validati, posso procedere ad registrare l'utente
-$stmt = $pdo->prepare('INSERT INTO `User` (`ID`,`Username`, `Email`, `HashPW`, `LastR`) VALUES (null, :username, :email, :HashPW, null);');
+$stmt = $pdo->prepare('INSERT INTO `User` (`ID`,`Username`, `Email`, `HashPW`) VALUES (null, :username, :email, :HashPW);');
 
 //TODO: post implementazione del login(hash(hash(password+salt)+R)) sicuro, creare la stringa randomizza di 12 caratteri ascii
 //$salt = md5(rand());
