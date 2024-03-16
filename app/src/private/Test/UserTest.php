@@ -12,7 +12,7 @@ class UserTest extends TestCase
     private $pdo;
     private $email = 'test@example.com';
     private $password = 'password1235489';
-    private $username = 'kHbJNvFZCLwXqfyPIpG'; // se questo viene modifica ricorda di modificare anche username in tearDownAfterClass
+    private $username = 'Ago'; // se questo viene modifica ricorda di modificare anche username in tearDownAfterClass
     private $PrivateTeam = "";
 
     protected function setUp(): void
@@ -49,8 +49,8 @@ class UserTest extends TestCase
         $response = json_decode(curl_exec($ch), true);
         curl_close($ch);
 
-        $this->assertEquals(1, $response['stato'], "ERR! Non è stato creato nessun utente." . $response['messaggio']);
         error_log("Test Create.php:" . print_r($response, true) . PHP_EOL . "-------------");
+        $this->assertEquals(1, $response['stato'], "ERR! Non è stato creato nessun utente." . $response['messaggio']);
     }
 
     public function testTriggerPrivate(): void

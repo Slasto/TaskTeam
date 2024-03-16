@@ -26,6 +26,7 @@ services:
 
   db:
     image: mariadb:latest
+    build: './build/mariadb'
     environment:
       MYSQL_ROOT_PASSWORD: "1234"
       MYSQL_DATABASE: SWBD-database
