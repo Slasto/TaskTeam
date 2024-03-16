@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y \
         libpng-dev \
         libjpeg-dev \
         exif \
+        npm \
         && docker-php-ext-install pdo pdo_mysql gd
 
 # ---Importa nuova configurazione su apache2---
@@ -18,7 +19,6 @@ COPY swbd_Project.conf /etc/apache2/sites-available/
 RUN a2ensite swbd_Project.conf
 
 # ---Compilazione CSS---
-# npx tailwindcss -i ./src/public/css/input.css -o ./src/public/css/output.css --watch
-# RUN npm install -D tailwindcss @tailwindcss/forms chart.js
-# RUN npx tailwindcss -i ./src/public/css/input.css -o ./src/public/css/output.css
+RUN npm install -D tailwindcss @tailwindcss/forms chart.js
+RUN npx tailwindcss -i ./src/public/css/input.css -o ./src/public/css/output.css
 RUN service apache2 restart
