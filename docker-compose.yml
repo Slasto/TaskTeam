@@ -30,7 +30,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: "1234"
       MYSQL_DATABASE: SWBD-database
-    #ports:
+    # ports:
      # - 3306:3306
     networks:
       - apache2
