@@ -1,1 +1,0 @@
-{"version":1,"defects":{"UserTest::testRegister":7,"UserTest::testTriggerPrivate":8,"UserTest::testCreationActivity":7,"UserTest::testAttivita":8},"times":{"UserTest::testRegister":0.985,"UserTest::testTriggerPrivate":0.072,"UserTest::testCreationActivity":0.351,"UserTest::testAttivita":0.005}}

@@ -1,47 +1,33 @@
 version: "3.9"
 
-networks:
-  apache2:
-
 services:
-
   web:
-    image: php:apache
+    container_name: web
     build: './build/php'
     volumes:
       - ./app:/var/www/html/
-      - ./sites-available:/etc/apache2/sites-available
     ports:
       - 80:80
-      - 443:443
-    networks:
-      - apache2
+      #- 443:443 TODO: Use TLS w\self-signed key
     depends_on:
       - db
-    environment:
-      WORDPRESS_DB_HOST: db
-      WORDPRESS_DB_USER: root
-      WORDPRESS_DB_PASSWORD: "1234"
-      WORDPRESS_DB_NAME: SWBD-database
+    env_file:
+      - ./.env
 
   db:
-    image: mariadb:latest
+    container_name: db
     build: './build/mariadb'
-    environment:
-      MYSQL_ROOT_PASSWORD: "1234"
-      MYSQL_DATABASE: SWBD-database
+    env_file:
+      - ./.env
     # ports:
-     # - 3306:3306
-    networks:
-      - apache2
+     # - 3306:3306 # Expose db if needed
 
   phpmyadmin:
     image: phpmyadmin:latest
+    container_name: phpmyadmin
     depends_on:
       - db
-    networks:
-      - apache2
     ports:
       - 8080:80
-    environment:
-      PMA_HOST: db
+    env_file:
+      - ./.env
