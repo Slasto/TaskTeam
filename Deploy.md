@@ -4,11 +4,7 @@
     ```bash
     $ docker compose up --build
     ```
-3. Verificare la presenza del file `/var/www/html/src/public/css/output.css` nel container `web`
-   - nel caso non ci fosse è necessario allora compilare il css, usare in tale container:
-    ```bash
-    $ npx tailwindcss -i /var/www/html/src/public/css/input.css -o /var/www/html/src/public/css/output.css
-    ```
+3. è ora possibile accedere al sito dal [localhost](http://localhost:80/)
 ## Utenti pre caricati
 - Questo account è il proprietario di un Team con delle attivita gia impostate (nb. qui si può accedere alla sezione per la gestione del Team)
   - Username: Ago
