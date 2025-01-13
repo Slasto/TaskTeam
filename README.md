@@ -15,13 +15,13 @@ The application includes the following features:
 
 To deploy the application locally or in any Docker-compatible environment, simply use the provided docker-compose file. Here's how to get started:
 
-    Clone this repository to your local machine:
+Clone this repository to your local machine:
 
-git clone <repository_url>
+    git clone <repository_url>
 
 Navigate into the project directory:
 
-cd <project_directory>
+    cd <project_directory>
 
 Run the following command to start the application using Docker Compose:
 
