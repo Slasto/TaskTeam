@@ -27,7 +27,7 @@ Run the following command to start the application using Docker Compose:
 
     docker-compose up --build
 
-    After the build completes, the application should be accessible via your browser at the appropriate local address (e.g., http://localhost:8080).
+After the build completes, the application should be accessible in your browser at http://localhost:80 and PhpMyAdmin at http://localhost:8080
 
 ## Technologies Used
 
